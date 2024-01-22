@@ -1,18 +1,16 @@
 <template>
-  <v-app>
-    <v-main>
-      <router-view/>
-    </v-main>
-  </v-app>
+  <div>
+    <h1>Login</h1>
+  </div>
 </template>
-
 <script>
-
 export default {
-  name: 'App',
-
+  name: 'Login',
   data: () => ({
     //
   })
 }
 </script>
+<style scoped>
+
+</style>
