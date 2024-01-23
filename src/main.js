@@ -8,12 +8,16 @@ import VueSweetalert2 from 'vue-sweetalert2'
 // 레이아웃
 import defaultLayout from './Layouts/defaultLayout.vue'
 import emptyLayout from './Layouts/emptyLayout.vue'
+import adminLayout from './Layouts/adminLayout.vue'
 
 // 메인 페이지
 import MainPage from './views/MainPage.vue'
 
 // 로그인 페이지
 import login from './views/login.vue'
+
+// 관리자 페이지
+import admin from './admin/adminMain.vue'
 
 const routes = [
   {
@@ -34,15 +38,27 @@ const routes = [
     component: emptyLayout,
     children: [
       {
-        path: '/',
+        path: '',
         name: 'login',
         component: login,
+      }
+    ]
+  },
+  {
+    path: '/admin/',
+    name: 'admin',
+    component: adminLayout,
+    children: [
+      {
+        path: '',
+        name: 'admin',
+        component: admin
       }
     ]
   }
 ]
 
-// window.Kakao.init('앱 키')
+window.Kakao.init('d40e0d148a2c546987b5286344a10dae')
 
 const router = createRouter({
   history: createWebHistory(),
