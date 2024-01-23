@@ -39,7 +39,7 @@
   </div>
 </template>
 <script>
-import axios from "axios"
+import axios from 'axios'
 import { Chart, registerables } from 'chart.js'
 import { Line } from 'vue-chartjs'
 Chart.register(...registerables)
@@ -83,14 +83,14 @@ export default {
   },
   methods: {
     async getStock () {
-      try{
+      try {
         const res = await axios.get('http://localhost:3000/stock/all_stock_info')
         this.stockList = res.data
       } catch (err) {
         console.log(err)
       }
     }
-  },
+  }
 }
 </script>
 <style scoped>
