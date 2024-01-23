@@ -1,7 +1,7 @@
 <template>
-  <div>
+  <div class="root_container">
     <Header />
-    <div>
+    <div class="default_content">
       <router-view />
     </div>
     <Footer />
@@ -20,5 +20,22 @@ export default {
 }
 </script>
 <style scoped>
+.root_container {
+  width: 100%;
+  min-width: 1280px;
+}
+.default_content {
+  padding-top: 120px;
+  margin: auto;
+  height: 100%;
+  position: relative;
+  min-height: 100%;
+}
 
+Footer {
+  width: 100%;
+  height: auto;
+  position : relative;
+  transform : translateY(-1%);
+}
 </style>
