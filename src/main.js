@@ -4,6 +4,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import store from './store'
 import vuetify from './plugins/vuetify'
 import VueSweetalert2 from 'vue-sweetalert2'
+import mixins from './mixins'
 
 // 레이아웃
 import defaultLayout from './Layouts/defaultLayout.vue'
@@ -70,4 +71,5 @@ app.use(router)
 app.use(store)
 app.use(vuetify)
 app.use(VueSweetalert2)
+app.mixin(mixins)
 app.mount('#app')

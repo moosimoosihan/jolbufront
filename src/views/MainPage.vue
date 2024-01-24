@@ -1,11 +1,10 @@
 <template>
   <div>
-    <button @click="getStock()">코인 받기</button>
-    <Line
-      class="cospy-chart"
-      :options="chartOptions"
-      :data="chartData"
-    />
+<!--    <Line v-if="stockList.length > 0"-->
+<!--      class="cospy-chart"-->
+<!--      :options="chartOptions"-->
+<!--      :data="chartData"-->
+<!--    />-->
   <table style="width: 100%;">
     <thead>
       <tr>
@@ -22,16 +21,16 @@
           <p>{{ stock.code }}</p>
         </td>
         <td>
-          <p>{{ stock.opening_price }}</p>
+          <p>{{ format(stock.opening_price) }}</p>
         </td>
         <td>
-          <p>{{ stock.high_price }}</p>
+          <p>{{ format(stock.high_price) }}</p>
         </td>
         <td>
-          <p>{{ stock.low_price }}</p>
+          <p>{{ format(stock.low_price) }}</p>
         </td>
         <td>
-          <p>{{ stock.trade_price }}</p>
+          <p>{{ format(stock.trade_price) }}</p>
         </td>
       </tr>
     </tbody>
@@ -41,27 +40,27 @@
 <script>
 import axios from 'axios'
 import { Chart, registerables } from 'chart.js'
-import { Line } from 'vue-chartjs'
+// import { Line } from 'vue-chartjs'
 Chart.register(...registerables)
 
 export default {
   name: 'MainPage',
   components: {
-    Line
+    // Line
   },
   data () {
     return {
       stockList: [],
       stockDataTime: null,
-      chartData: {
+      /* chartData: {
         labels: [
-          '09'
+          '시작가', '최고가', '최저가', '거래가'
         ],
         datasets: [
           {
-            label: '시간별',
+            label: this.stockList[0].code,
             backgroundColor: '#718bff', // 포인트 색상
-            data: [0],
+            data: [this.stockList[0].opening_price, this.stockList[0].high_price, this.stockList[0].low_price, this.stockList[0].trade_price],
             borderColor: '#1a48ff', // 선 색상
             hoverBorderColor: '#000000' // 마우스 hover 시 포인트 테두리 색상
           }
@@ -70,7 +69,7 @@ export default {
       chartOptions: {
         responsive: false,
         maintainAspectRatio: false
-      }
+      } */
     }
   },
   created () {
@@ -83,16 +82,26 @@ export default {
   },
   methods: {
     async getStock () {
-      try {
-        const res = await axios.get('http://localhost:3000/stock/all_stock_info')
-        this.stockList = res.data
-      } catch (err) {
-        console.log(err)
-      }
+      this.stockDataTime = setInterval(async () => {
+        try {
+          const res = await axios.get('http://localhost:3000/stock/all_stock_info')
+          this.stockList = res.data
+        } catch (err) {
+          console.log(err)
+        }
+      }, 1000)
+    },
+    format(num) {
+      return this.$currencyFormat(num)
     }
+  },
+  unmounted () {
+    clearInterval(this.stockDataTime)
   }
 }
 </script>
 <style scoped>
-
+p {
+  text-align: center;
+}
 </style>
