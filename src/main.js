@@ -16,6 +16,7 @@ import MainPage from './views/MainPage.vue'
 
 // 로그인 페이지
 import login from './views/login.vue'
+import signup from './views/signup.vue'
 
 // 관리자 페이지
 import admin from './admin/adminMain.vue'
@@ -42,6 +43,10 @@ const routes = [
         path: '',
         name: 'login',
         component: login,
+      },
+      {
+        path: 'signup',
+        component: signup,
       }
     ]
   },
