@@ -1,4 +1,5 @@
-<template><div class="logo">
+<template>
+<div class="logo">
   <img :src="require('../assets/logo.png')" @click="gotoMain()"/>
    <main id="main-holder">
     <div class="login">
@@ -24,7 +25,7 @@ export default {
         id: '',
         naver_id: '',
         password: '',
-        naverLogin: [],
+        // naverLogin: [],
       }
     },
     methods: {
@@ -36,7 +37,7 @@ export default {
       },
       // 로컬 로그인
       localLogin() {
-        if(this.id == '' || this.password == '') {
+        if(this.user_id == '' || this.user_pw == '') {
           this.$swal("아이디와 비밀번호를 입력해주세요.")
           return
         }
@@ -44,8 +45,8 @@ export default {
           url: "http://localhost:3000/auth/login_process",
           method: "POST",
           data: {
-            user_id: this.id,
-            user_pw: this.password
+            user_id: this.user_id,
+            user_pw: this.user_pw
           },
         })
           .then(res => {
@@ -55,7 +56,7 @@ export default {
               this.$swal("비밀번호가 일치하지 않습니다.")
               return
             } else {
-              this.$store.commit("user", { id: this.id, user_no: res.data.message })
+              this.$store.commit("user", { user_id: this.user_id, user_no: res.data.message, kakao: '' })
               this.$swal({
                 position: 'top',
                 icon: 'success',
@@ -85,16 +86,15 @@ export default {
             success: (res) => {
                 const kakao_account = res.kakao_account;
                 const email = kakao_account.email; //카카오 이메일
-                
-
+                const name = kakao_account.profile.nickname
                 console.log( email, name)
 
                 axios({
                     url: "http://localhost:3000/auth/kakaoLoginProcess",
                     method: "POST",
                     data: {
-                        id: email,
-                        name: name,
+                        user_id: name,
+                        user_email: email,
                     },
                 }).then(res => {
                     if (res.data.message == '저장완료') {
@@ -107,7 +107,7 @@ export default {
                         })
                     }
                     else {
-                        this.$store.commit("user", { user_id: email, user_no: res.data.message })
+                        this.$store.commit("user", { user_id: email, user_no: res.data.message, kakao : 'kakao' })
                         this.$swal({
                             position: 'top',
                             icon: 'success',
@@ -165,7 +165,7 @@ export default {
                 .catch(err => {
                     console.log(err);
                 })
-        },//메인페이지 이동
+       },//메인페이지 이동
         gotoMain() {
           this.$router.push('/')
         },//네이버 페이지 버튼

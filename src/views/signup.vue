@@ -1,21 +1,25 @@
 <template>
-  <div class="container">
-
-    <div class="logo">
+<div class="logo">
         <img :src="require('../assets/logo.png')" @click="gotoMain()">
-    </div>
+        </div>
+  <div class="container">
       <div id="box1">
         <div class="name">
           <span class="s">이름</span>
           <input id="name" type="text" v-model="user_name" placeholder="이름을 입력해 주세요.">
-        <div class="pns">
-          <span class="s">투자성향</span>
-          <input id="pnspns" type="text" v-model="user_pns" placeholder="투자 성향을 입력해 주세요.">
+       <div class="pns">
+        <label for="pnspns" class="s">투자성향</label>
+       <select id="pnspns"  v-model="user_pns" >
+      <!-- 투자 성향 옵션들 -->
+      <option value="방어적인">방어적인</option>
+      <option value="보통">보통</option>
+      <option value="공격적인">공격적인</option>
+       </select>
         </div>
         </div>
         <div class="id">
           <span class="s">아이디</span>
-          <input id="id" type="text" v-model="user_id" placeholder="id를 입력해 주세요." @input="id_check()">
+          <input id="id" type="text" v-model="user_id" placeholder="아이디를 입력해 주세요." @input="id_check()">
           <p class="alert_font" v-if="id_check_bool==1" style="color:red;">중복된 아이디입니다.</p>
           <p class="alert_font" v-else-if="id_check_bool==2" style="color:red;">DB 에러 발생</p>
           <p class="alert_font" v-else-if="id_check_bool==3">사용 가능한 아이디입니다.</p>
@@ -48,6 +52,7 @@
         </div>
       </div>
   </div>
+
 </template>
 <script>
 import axios from 'axios';
@@ -58,7 +63,7 @@ export default {
       user_id: '', //아이디
       user_email: '', //이메일
       user_name:'',
-      user_pns:'',
+      user_pns:'방어적인',
       user_pw: '', //비밀번호
       // 실시간 확인 데이터
       id_check_bool: 0,
@@ -219,6 +224,12 @@ export default {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+}
+.pns{
+    
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto;
 }
 .logo {
   
