@@ -15,8 +15,13 @@ import adminLayout from './Layouts/adminLayout.vue'
 import MainPage from './views/MainPage.vue'
 import stock from './views/stock.vue'
 
+//MY종목
+import myStock from './views/myStock.vue'
+
 // 로그인 페이지
 import login from './views/login.vue'
+//회원가입
+import signup from './views/signup.vue'
 
 // 관리자 페이지
 import admin from './admin/adminMain.vue'
@@ -48,6 +53,15 @@ const routes = [
         path: '',
         name: 'login',
         component: login,
+      },
+      {
+        path: 'signup',
+        component: signup,
+      },
+      {
+        path: '/mystock',
+        name: 'mystock',
+        component: myStock,
       }
     ]
   },
