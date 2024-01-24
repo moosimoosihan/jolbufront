@@ -82,6 +82,7 @@ export default {
 </script>
 <style scoped>
 .header_wrapper {
+  background-color: rgb(255, 255, 255);
   font-size: 15px;
   position: fixed;
   top: 0;

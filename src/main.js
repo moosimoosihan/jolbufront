@@ -13,6 +13,7 @@ import adminLayout from './Layouts/adminLayout.vue'
 
 // 메인 페이지
 import MainPage from './views/MainPage.vue'
+import stock from './views/stock.vue'
 
 // 로그인 페이지
 import login from './views/login.vue'
@@ -30,6 +31,11 @@ const routes = [
         path: '/',
         name: 'MainPage',
         component: MainPage
+      },
+      {
+        path: '/stock/:code',
+        name: 'stock',
+        component: stock
       }
     ]
   },
