@@ -1,10 +1,10 @@
 <template>
   <div>
-<!--    <Line v-if="stockList.length > 0"-->
-<!--      class="cospy-chart"-->
-<!--      :options="chartOptions"-->
-<!--      :data="chartData"-->
-<!--    />-->
+    <Line
+      class="cospy-chart"
+      :options="chartOptions"
+      :data="chartData"
+    />
   <table style="width: 100%;">
     <thead>
       <tr>
@@ -40,27 +40,27 @@
 <script>
 import axios from 'axios'
 import { Chart, registerables } from 'chart.js'
-// import { Line } from 'vue-chartjs'
+import { Line } from 'vue-chartjs'
 Chart.register(...registerables)
 
 export default {
   name: 'MainPage',
   components: {
-    // Line
+    Line
   },
   data () {
     return {
       stockList: [],
       stockDataTime: null,
-      /* chartData: {
+      chartData: {
         labels: [
           '시작가', '최고가', '최저가', '거래가'
         ],
         datasets: [
           {
-            label: this.stockList[0].code,
+            label: '코스피',
             backgroundColor: '#718bff', // 포인트 색상
-            data: [this.stockList[0].opening_price, this.stockList[0].high_price, this.stockList[0].low_price, this.stockList[0].trade_price],
+            data: [2000, 5000, 1900, 3000],
             borderColor: '#1a48ff', // 선 색상
             hoverBorderColor: '#000000' // 마우스 hover 시 포인트 테두리 색상
           }
@@ -69,7 +69,7 @@ export default {
       chartOptions: {
         responsive: false,
         maintainAspectRatio: false
-      } */
+      }
     }
   },
   created () {
