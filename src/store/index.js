@@ -7,7 +7,8 @@ const store = createStore({
     return {
       user: {
         user_id: '',
-        user_no: ''
+        user_no: '',
+        kakao: '',
       }
     }
   },

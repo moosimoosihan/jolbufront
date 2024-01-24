@@ -63,6 +63,18 @@ export default {
       this.$router.push('/myPage')
     },
     logout () {
+      if(this.user.kakao==='kakao'){
+        Kakao.API.request({
+          url: '/v1/user/unlink',
+          success: function(response) {
+          console.log(response);
+          },
+          fail: function(error) {
+          alert('탈퇴처리가 미완료되었습니다. \n관리자에게 문의하시기 바랍니다.');
+          console.log(error);
+        }
+        })
+      }
       this.$swal({
         position: 'top',
         icon: 'success',
@@ -73,7 +85,8 @@ export default {
         window.location.href = 'http://localhost:8080'
         this.$store.commit('user', {
           user_no: '',
-          user_id: ''
+          user_id: '',
+          kakao: '',
         })
       })
     }
@@ -82,6 +95,7 @@ export default {
 </script>
 <style scoped>
 .header_wrapper {
+  background-color: rgb(255, 255, 255);
   font-size: 15px;
   position: fixed;
   top: 0;

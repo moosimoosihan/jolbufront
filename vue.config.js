@@ -7,6 +7,10 @@ module.exports = defineConfig({
       '^/auth': {
         target,
         changeOrigin: true
+      },
+      '^/openai': {
+        target,
+        changeOrigin: true
       }
     },
     historyApiFallback: true
