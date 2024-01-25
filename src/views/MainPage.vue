@@ -1,35 +1,20 @@
 <template>
-  <div>
-    <table style="width: 100%;">
-      <thead>
-        <tr>
-          <th>코드</th>
-          <th>시작가</th>
-          <th>최고가</th>
-          <th>최저가</th>
-          <th>거래가</th>
+  <div class="table-container">
+    <v-data-table
+      :headers ="headers"
+      :items="coinData"
+      :hide-default-footer="true"
+      class="elevation-1 small-table"
+    >
+      <template v-slot:item="{ item }">
+        <tr @click="gotoStock(item.coin)">
+          <td>{{ item.coin }}</td>
+          <td>{{ $currencyFormat(item.price) }}</td>
+          <td>{{ item.volume }}</td>
+          <td>{{ item.changeRate }}</td>
         </tr>
-      </thead>
-      <tbody>
-        <tr v-for="(stock, i) in stockList" :key="i" @click="gotoStock(stock.code)">
-          <td>
-            <p>{{ stock.code }}</p>
-          </td>
-          <td>
-            <p>{{ format(stock.opening_price) }}</p>
-          </td>
-          <td>
-            <p>{{ format(stock.high_price) }}</p>
-          </td>
-          <td>
-            <p>{{ format(stock.low_price) }}</p>
-          </td>
-          <td>
-            <p style="color:red;">{{ format(stock.trade_price) }}</p>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+      </template>
+    </v-data-table>
   </div>
 </template>
 <script>
@@ -39,7 +24,13 @@ export default {
   name: 'MainPage',
   data () {
     return {
-      stockList: [],
+      headers: [
+        { text: '코인', value: 'coin' },
+        { text: '가격', value: 'price' },
+        { text: '거래량', value: 'volume' },
+        { text: '변동률', value: 'changeRate' }
+      ],
+      coinData: [],
       stockDataTime: null,
     }
   },
@@ -55,8 +46,14 @@ export default {
     async getStock () {
       this.stockDataTime = setInterval(async () => {
         try {
-          const res = await axios.get('http://localhost:3000/stock/all_stock_info')
-          this.stockList = res.data
+          const res = await axios.get('http://localhost:3000/stock/all_coin_info')
+          this.coinData = Object.entries(res.data.data)
+            .map(([coin, info]) => ({
+              coin,
+              price: info.closing_price,
+              volume: info.units_traded,
+              changeRate: info.fluctate_rate_24H
+            }))
         } catch (err) {
           console.log(err)
         }
@@ -75,7 +72,14 @@ export default {
 }
 </script>
 <style scoped>
-p {
-  text-align: center;
+.table-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh; /* 화면 전체 높이에 맞춤 */
+}
+.small-table {
+  width: 50%;
+  font-size: 12px;
 }
 </style>

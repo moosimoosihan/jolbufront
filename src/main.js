@@ -5,6 +5,7 @@ import store from './store'
 import vuetify from './plugins/vuetify'
 import VueSweetalert2 from 'vue-sweetalert2'
 import mixins from './mixins'
+import VueApexCharts from 'vue3-apexcharts'
 
 // 레이아웃
 import defaultLayout from './Layouts/defaultLayout.vue'
@@ -92,4 +93,5 @@ app.use(store)
 app.use(vuetify)
 app.use(VueSweetalert2)
 app.mixin(mixins)
+app.use(VueApexCharts)
 app.mount('#app')

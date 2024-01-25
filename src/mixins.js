@@ -20,10 +20,18 @@ export default {
     },
     $currencyFormat(value){
       if (value !== undefined) {
+        // 소수점 제거
+        value = Math.floor(value);
         const formattedPrice = value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
         return `${formattedPrice} 원`;
       }
       return "";
-    }
+    },
+    $formatDateTime(dateTime) {
+      const date = new Date(dateTime);
+      const formattedDateTime = date.toLocaleDateString("ko-KR", { year: "numeric", month: "2-digit", day: "2-digit" });
+
+      return formattedDateTime;
+    },
   }
 }
