@@ -7,7 +7,7 @@
       class="elevation-1 small-table"
     >
       <template v-slot:item="{ item }">
-        <tr @click="gotoStock(item.coin)">
+        <tr @click="gotoStock(item.coin)" class="coin_table">
           <td>{{ item.coin }}</td>
           <td>{{ $currencyFormat(item.price) }}</td>
           <td>{{ item.volume }}</td>
@@ -25,10 +25,10 @@ export default {
   data () {
     return {
       headers: [
-        { text: '코인', value: 'coin' },
-        { text: '가격', value: 'price' },
-        { text: '거래량', value: 'volume' },
-        { text: '변동률', value: 'changeRate' }
+        { title: '코인', value: 'coin', align: 'center' },
+        { title: '가격', value: 'price', align: 'center' },
+        { title: '거래량', value: 'volume', align: 'center' },
+        { title: '변동률', value: 'changeRate', align: 'center' }
       ],
       coinData: [],
       stockDataTime: null,
@@ -81,5 +81,8 @@ export default {
 .small-table {
   width: 50%;
   font-size: 12px;
+}
+.coin_table {
+  text-align: center;
 }
 </style>
