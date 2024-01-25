@@ -11,9 +11,9 @@
           <button @click="gotoLogin()" class="login_btn">로그인</button>
         </div>
         <div v-else>
-          <div>
-            <button @click="gotoMyPage()">마이페이지</button>
-            <button @click="logout()">로그아웃</button>
+          <div class="logout_btn">
+            <button @click="gotoMyPage()" class="logout_btn1" >마이페이지</button>
+            <button @click="logout()" class="logout_btn1">로그아웃</button>
           </div>
         </div>
       </div>
@@ -28,8 +28,10 @@
       </div>
     </div>
     <div class="menu">
-      <a class="hvr-underline-from-left" @click="gotoHome()">메인종목 추천(AI추천)</a>
+      <a class="hvr-underline-from-left" @click="gotoHome()">AI주식예측</a>
       <a class="hvr-underline-from-left" @click="gotoMyStock()">MY종목</a>
+      <a class="hvr-underline-from-left" @click="gotoMyStock()">AI주식추천</a> <!--버튼 경로 바꿔야함-->
+      <a class="hvr-underline-from-left" @click="gotoMyStock()">고객센터</a> <!--버튼 경로 바꿔야함-->
     </div>
   </div>
 </template>
@@ -95,7 +97,6 @@ export default {
 </script>
 <style scoped>
 .header_wrapper {
-  background-color: rgb(255, 255, 255);
   font-size: 15px;
   position: fixed;
   top: 0;
@@ -104,7 +105,13 @@ export default {
   width: 100%;
   min-width: 1280px;
   height: 110px;
+  background: #ffffff;
+  box-shadow: 0 4px 5px -4px rgb(219, 219, 219);
+
 }
+.header_wrapper {
+    min-height: 125px;
+  }
 .navbar_top {
   height: 50px;
   justify-content: space-between;
@@ -121,31 +128,52 @@ a {
   position: relative;
 }
 .logo_img {
-  width: 200px;
-  height: 85px;
+  width: 150px;
+  height: 60px;
   float: left;
   padding: 0 0 0 16px;
-  margin-top: 25px;
-  margin-left: 35px;
+  /*margin-top: 25px;*/
+  /*margin-left: 35px;*/
 }
 /* ------------------------------------------------------ login */
 .login_btn {
-  float: right;
-  margin-top: 15px;
-  margin-right: 35px;
-  margin-top: 40px;
-  background-color: transparent;
-  border: 0;
+  padding: 10px 20px;
+  font-size: 16px;
+  text-align: center;
+  cursor: pointer;
+  border: 2px solid #3498db; /* 버튼 테두리 색상 */
+  border-radius: 5px;
+  color: #3498db; /* 버튼 텍스트 색상 */
+  background-color: #fff; /* 버튼 배경 색상 */
+  transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+  margin-top: 25px;
+
+}
+.logout_btn {
+  display: flex;
+  flex-direction: column; /* 세로 방향으로 나열 */
+  margin-top:25px;
+}
+.logout_btn1{
+  border: 2px solid #3498db; /* 버튼 테두리 색상 */
+  border-radius: 5px;
+  color: #3498db; /* 버튼 텍스트 색상 */
+  background-color: #fff; /* 버튼 배경 색상 */
+  
+}
+.login_btn:hover {
+  background-color: #3498db; /* 호버 배경 색상 */
+  color: #fff; /* 호버 텍스트 색상 */
+  border-color: #fff; /* 호버 테두리 색상 */
 }
 /* ------------------------------------------------------ search */
 .navbar_search {
   display: flex;
-  width: 20%;
+  width: 15%;
   max-width: 100%;
   background-color: rgb(255, 255, 255);
   border-bottom: black 1px solid;
   float : right;
-  margin-right: 55px;
   margin-right: 55px;
   margin-top: 50px;
 }
@@ -154,23 +182,31 @@ input[type='text'] {
   font-size: 1rem;
   outline: none;
   background-color: rgb(255, 255, 255);
-  margin-right: 8px;
   margin-left: 5px;
+  margin-top : 35px;
+}
+.navbar_search i{
+  margin-top: 40px;
 }
 
 /* ------------------------------------------------------ navi */
 .menu {
-  width: 50%;
+  width: 100%;
   position: absolute;
   overflow: hidden;
-  justify-content: space-between;
+  justify-content: center;
+  /*margin-left: 2%; 왼쪽으로 붙이기 필요하면 쓰세여*/
+  margin-right: 10%;
+  margin-top: 35px; /* 메뉴를 조금 내리기 위한 마진 값 설정 */
 }
 
 .menu a {
   color: black;
   user-select: none;
   margin-left: 200px;
+  font-size:bold;
 }
+
 
 /* ------------------------------------------------------ menu hover */
 /* Underline From Left */
@@ -182,6 +218,8 @@ input[type='text'] {
   box-shadow: 0 0 1px rgba(0, 0, 0, 0);
   position: relative;
   overflow: hidden;
+  font-weight: bold;
+  font-size:18px;
 }
 .hvr-underline-from-left:before {
   content: "";
@@ -199,8 +237,15 @@ input[type='text'] {
   -webkit-transition-timing-function: ease-out;
   transition-timing-function: ease-out;
 }
-.hvr-underline-from-left:hover:before, .hvr-underline-from-left:focus:before, .hvr-underline-from-left:active:before {
+/*.hvr-underline-from-left:hover:before, .hvr-underline-from-left:focus:before, .hvr-underline-from-left:active:before {
   right: 0;
+}*/
+.hvr-underline-from-left:hover, .hvr-underline-from-left:focus, .hvr-underline-from-left:active {
+  color: blue;
+}
+.hvr-underline-from-left:hover:before, .hvr-underline-from-left:before, .hvr-underline-from-left:before {
+  -webkit-transform: scale(1);
+  transform: scale(1);
 }
 /* ------------------------------------------------------ login & mypage */
 .mymenu {
