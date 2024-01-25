@@ -22,7 +22,7 @@ export default {
 <style scoped>
 .root_container {
   width: 100%;
-  min-width: 1280px;
+  min-width: 1300px;
 }
 .default_content {
   padding-top: 120px;

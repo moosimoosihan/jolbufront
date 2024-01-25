@@ -1,4 +1,4 @@
-<template>   
+<template>
   <div class="container">
     <div class="logo">
         <img :src="require('../assets/logo.png')" @click="gotoMain()">
@@ -12,28 +12,28 @@
         <div class="id">
           <span class="s">아이디</span>
           <input id="id" type="text" v-model="user_id" placeholder="아이디를 입력해 주세요." @input="id_check()">
-          <p class="alert_font" v-if="id_check_bool==1" style="color:red;">중복된 아이디입니다.</p>
-          <p class="alert_font" v-else-if="id_check_bool==2" style="color:red;">DB 에러 발생</p>
-          <p class="alert_font" v-else-if="id_check_bool==3">사용 가능한 아이디입니다.</p>
+          <p class="alert_font" v-if="id_check_bool===1" style="color:red;">중복된 아이디입니다.</p>
+          <p class="alert_font" v-else-if="id_check_bool===2" style="color:red;">DB 에러 발생</p>
+          <p class="alert_font" v-else-if="id_check_bool===3">사용 가능한 아이디입니다.</p>
           <p class="alert_font" v-else >&nbsp;</p>
         </div>
         <div class="password">
           <span class="s">비밀번호</span>
           <input id="password" type="password"  v-model="user_pw" placeholder="비밀번호를 입력해 주세요.(6자리 이상)">
-          <p class="alert_font" v-if="user_pw.length < 6 && user_pw.length!=0" style="color:red;">비밀번호는 6자리 이상으로 입력해주세요.</p>
+          <p class="alert_font" v-if="user_pw.length < 6 && user_pw.length!==0" style="color:red;">비밀번호는 6자리 이상으로 입력해주세요.</p>
           <p class="alert_font">&nbsp;</p>
         </div>
         <div class="passwordCheck">
           <span class="s">비밀번호 확인</span>
           <input id="passwordCheck" type="password"  v-model="user_pw_ck" placeholder="비밀번호를 다시 입력해 주세요.">
-          <p class="alert_font" v-if="user_pw_ck!=user_pw" style="color:red;">비밀번호가 일치하지 않습니다.</p>
+          <p class="alert_font" v-if="user_pw!==user_pw_ck" style="color:red;">비밀번호가 일치하지 않습니다.</p>
           <p class="alert_font" v-else >&nbsp;</p>
         </div>
         <div class="email">
           <span class="s">이메일</span>
           <input id="email" type="text"  v-model="user_email" placeholder="이메일을 입력해 주세요." @input="email_check()">
-          <p class="alert_font" v-if="email_check_bool==1" style="color:red;">사용할 수 없는 이메일입니다.</p>
-          <p class="alert_font" v-else-if="email_check_bool==2">사용 가능한 이메일입니다.</p>
+          <p class="alert_font" v-if="email_check_bool===1" style="color:red;">사용할 수 없는 이메일입니다.</p>
+          <p class="alert_font" v-else-if="email_check_bool===2">사용 가능한 이메일입니다.</p>
           <p class="alert_font" v-else >&nbsp;</p>
       </div>
       <div class="pns">
@@ -70,6 +70,7 @@ export default {
       user_name:'',  //이름
       user_pns:'방어적인',//투자성향
       user_pw: '', //비밀번호
+      user_pw_ck: '', //비밀번호 확인
       // 실시간 확인 데이터
       id_check_bool: 0,
       email_check_bool: 0,
@@ -107,7 +108,7 @@ export default {
                     else if (res.data.message == 'DB_error') {
                         this.$swal("DB 에러 발생")
                     }
-                   
+
                     else  {
                         this.$swal({
                             position: 'top',
@@ -168,7 +169,7 @@ export default {
         // "모두 동의합니다." 라디오 버튼을 클릭하면 각 라디오 버튼을 정확히 선택
          document.getElementById('radi2').checked = true;
          document.getElementById('radi3').checked = true;
-      
+
         },
         gotoLogin() {
           this.$router.back();
@@ -205,7 +206,7 @@ export default {
                     })
                 .catch(err => {
                         console.log(err);
-                    
+
                 })
             },
         //이메일 유효성 검사
@@ -259,8 +260,8 @@ export default {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-}  
-div {     
+}
+div {
     padding-top: 6px;
 }
 #box1 .addressz input {
@@ -309,7 +310,7 @@ div {
     margin-left: 180px;
 }
 input:focus {
-    /* border: 2px solid #ffc905; */
+    /* border: 2px solid #ffec905; */
     outline: 2px solid rgb(112, 86, 246);
 }
 .s {

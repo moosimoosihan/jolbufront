@@ -60,7 +60,6 @@ export default {
         } catch (err) {
           console.log(err)
         }
-        await this.getStockCandle()
       }, 1000)
     },
     async getStockCandle () {
