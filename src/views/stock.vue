@@ -1,93 +1,89 @@
 <template>
   <div>
-    <Bar style="max-height: 200px; max-width: 500px"
-      class="cospy-chart"
-      :options="chartOptions"
-      :data="chartData"
+    <ApexCharts
+      ref="candleChart"
+      type="candlestick"
+      height="350"
+      width="500"
+      :options="candleChartOptions"
+      :series="candleChartSeries"
     />
-    <p>코드명 : {{ data.code }}</p>
-    <p>최고가 : {{ data.high_price }}</p>
-    <p>최저가 : {{ data.low_price }}</p>
-    <p>시가 : {{ data.opening_price }}</p>
-    <p>거래가 : {{ data.trade_price }}</p>
+    <p>{{ state }}</p>
+    <p>코드명 : {{ $route.params.code }}</p>
+    <p>최고가 : {{ $currencyFormat(data.max_price) }}</p>
+    <p>최저가 : {{ $currencyFormat(data.min_price) }}</p>
+    <p>시가 : {{ $currencyFormat(data.opening_price) }}</p>
+    <p>거래금액 : {{ $currencyFormat(data.acc_trade_value) }}</p>
   </div>
 </template>
 <script>
 import axios from 'axios'
-import { Chart, registerables } from 'chart.js'
-import { Bar } from 'vue-chartjs'
-Chart.register(...registerables)
+import ApexCharts from 'vue3-apexcharts'
 // import io from 'socket.io-client'
 
 export default {
   name: 'stock',
   components: {
-    Bar
+    ApexCharts
   },
   data () {
     return {
-      data: {},
+      state: '',
+      coinData: [],
       stockDataTime: null,
-      chartData: {
-        labels: [],
-        datasets: []
-      },
-      chartOptions: null,
       // socket: io('http://localhost:3001')
+      candleChartSeries: [],
+      candleChartOptions: {
+        candlestick: {
+          colors: {
+            upward: '#3C90EB',
+            downward: '#DF7D46'
+          }
+        }
+      },
+      data: []
     }
   },
   created () {
     this.getStock()
-    // this.socket.on('connect', () => {
-    //   console.log('주식 연결됨')
-    // })
-    // this.socket.on('stock', async (data) => {
-    //   if(data.user_no === this.user.user_no) {
-    //     console.log('유저 번호 일치')
-    //     console.log(data)
-    //   }
-    // })
+    this.getStockCandle()
   },
   methods : {
-    async getStock () {
+    async getStock() {
       this.stockDataTime = setInterval(async () =>{
         try{
-          const res = await axios.get(`http://localhost:3000/stock/stock_info/${this.$route.params.code}`)
-          this.data = res.data[0]
-          if(this.data.length<=0) return
-          this.chartData = {
-            labels: [
-              '거래가'
-            ],
-            datasets: [
-              {
-                label: this.data.code,
-                backgroundColor: '#718bff', // 포인트 색상
-                data: [this.data.trade_price], // 데이터
-                borderColor: '#1a48ff', // 선 색상
-                hoverBorderColor: '#000000' // 마우스 hover 시 포인트 테두리 색상
-              }
-            ]
-          }
-          this.chartOptions = {
-            responsive: false,
-            maintainAspectRatio: false
-          }
+          const res = await axios.get(`http://localhost:3000/stock/coin_info/${this.$route.params.code}`)
+          this.state = res.data.status === '0000' ? '거래중' : '거래중지'
+          this.data = res.data.data
         } catch (err) {
           console.log(err)
         }
       }, 1000)
-      /* this.socket.timeout(5000).emit('stock', {
-        user_no: this.user.user_no,
-        code: this.$route.params.code
-      }) */
+    },
+    async getStockCandle () {
+      try{
+        const res = await axios.get(`http://localhost:3000/stock/coin_info_candle/${this.$route.params.code}`)
+        this.coinData = res.data.data.splice(res.data.data.length-10,res.data.data.length)
+      } catch (err) {
+        console.log(err)
+      }
+      this.drawCandleChart()
+    },
+    drawCandleChart () {
+      const cd = this.coinData
+      var cdtemp=[];
+      for (var i = 0; i < cd.length; i++) {
+        cdtemp.push({
+          x: this.$formatDateTime(cd[i][0]),
+          y: [cd[i][1], cd[i][3], cd[i][4], cd[i][2]]
+        })
+      }
+      this.candleChartSeries = [{
+        data: cdtemp
+      }]
     }
   },
   unmounted () {
-    // this.socket.off('stock')
-    // this.socket.on('disconnect', () => {
-    //   console.log('주식 연결 끊김')
-    // })
     clearInterval(this.stockDataTime)
   }
 }
