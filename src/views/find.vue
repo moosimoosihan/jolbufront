@@ -35,23 +35,23 @@
           <p class="alert_font" v-if="email_check_bool==1" style="color:red;">사용할 수 없는 이메일입니다.</p>
           <p class="alert_font" v-else-if="email_check_bool==2">사용 가능한 이메일입니다.</p>
           <p class="alert_font" v-else >&nbsp;</p>
-      </div>
-      <div class="pns">
+    </div>
+    <div class="pns">
         <label for="pnspns" class="s">투자성향</label>
        <select id="pnspns"  v-model="user_pns" >
             <!-- 투자 성향 옵션들 -->
                 <option value="방어적인">방어적인</option>
                 <option value="보통">보통</option>
                 <option value="공격적인">공격적인</option>
-        </select>
-      </div>
-      <div id="box3">
-      <div>
+            </select>
+    </div>
+    <div id="box3">
+    <div>
          <input type="checkbox" name="agree" value="agreed" class="radi1" checked/>
         <label for="radi1">모두 동의합니다. [필수] 이용약관동의  [필수] 개인정보 수집 및 활용 동의
        </label>
-      </div>
-      <div class="signUp">
+    </div>
+    <div class="signUp">
         <input type="submit" class="signUpButton" @click="onSubmitForm()" value="회원가입">
     </div>
     </div>
@@ -243,7 +243,7 @@ export default {
     line-height: 35px;
     font-size: 12px;
     padding-left: 10px;
-    border: 1px solid rgb(255, 0, 0);
+    border: 2px solid rgb(112, 86, 246);
     border-radius: 10px;
 }
 .logo img {
