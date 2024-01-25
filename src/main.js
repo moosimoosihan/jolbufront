@@ -79,7 +79,7 @@ const routes = [
   }
 ]
 
-window.Kakao.init('d40e0d148a2c546987b5286344a10dae')
+window.Kakao.init(process.env.VUE_APP_KAKAO_API_KEY);
 
 const router = createRouter({
   history: createWebHistory(),

@@ -1,26 +1,33 @@
 <template>
   <div>
-<!--    <Line style="max-height: 200px; max-width: 500px"-->
-<!--      class="cospy-chart"-->
-<!--      :options="chartOptions"-->
-<!--      :data="chartData"-->
-<!--    />-->
+    <Bar style="max-height: 200px; max-width: 500px"
+      class="cospy-chart"
+      :options="chartOptions"
+      :data="chartData"
+    />
+    <p>코드명 : {{ data.code }}</p>
+    <p>최고가 : {{ data.high_price }}</p>
+    <p>최저가 : {{ data.low_price }}</p>
+    <p>시가 : {{ data.opening_price }}</p>
+    <p>거래가 : {{ data.trade_price }}</p>
   </div>
 </template>
 <script>
 import axios from 'axios'
-// import { Chart, registerables } from 'chart.js'
-// import { Line } from 'vue-chartjs'
-// Chart.register(...registerables)
+import { Chart, registerables } from 'chart.js'
+import { Bar } from 'vue-chartjs'
+Chart.register(...registerables)
 // import io from 'socket.io-client'
 
 export default {
   name: 'stock',
-  // components: {
-  //   Line
-  // },
+  components: {
+    Bar
+  },
   data () {
     return {
+      data: {},
+      stockDataTime: null,
       chartData: {
         labels: [],
         datasets: []
@@ -30,7 +37,7 @@ export default {
     }
   },
   created () {
-    this.getStock(12)
+    this.getStock()
     // this.socket.on('connect', () => {
     //   console.log('주식 연결됨')
     // })
@@ -42,38 +49,38 @@ export default {
     // })
   },
   methods : {
-    async getStock (time) {
-      let data = []
-      try{
-        const res = await axios.get(`http://localhost:3000/stock/stock_info/${this.$route.params.code}/${time}`)
-        data = res.data
-        console.log(data)
-      } catch (err) {
-        console.log(err)
-      }
-      // if(data.length === 0) return
-      // this.chartData = {
-      //   labels: [
-      //     '시작가', '최고가', '최저가', '거래가'
-      //   ],
-      //   datasets: [
-      //     {
-      //       label: data[0].code,
-      //       backgroundColor: '#718bff', // 포인트 색상
-      //       data: [data[0].opening_price, data[0].high_price, data[0].low_price, data[0].trade_price], // 데이터
-      //       borderColor: '#1a48ff', // 선 색상
-      //       hoverBorderColor: '#000000' // 마우스 hover 시 포인트 테두리 색상
-      //     }
-      //   ]
-      // }
-      // this.chartOptions = {
-      //   responsive: false,
-      //   maintainAspectRatio: false
-      // }
-      // this.socket.timeout(5000).emit('stock', {
-      //   user_no: this.user.user_no,
-      //   code: this.$route.params.code
-      // })
+    async getStock () {
+      this.stockDataTime = setInterval(async () =>{
+        try{
+          const res = await axios.get(`http://localhost:3000/stock/stock_info/${this.$route.params.code}`)
+          this.data = res.data[0]
+          if(this.data.length<=0) return
+          this.chartData = {
+            labels: [
+              '거래가'
+            ],
+            datasets: [
+              {
+                label: this.data.code,
+                backgroundColor: '#718bff', // 포인트 색상
+                data: [this.data.trade_price], // 데이터
+                borderColor: '#1a48ff', // 선 색상
+                hoverBorderColor: '#000000' // 마우스 hover 시 포인트 테두리 색상
+              }
+            ]
+          }
+          this.chartOptions = {
+            responsive: false,
+            maintainAspectRatio: false
+          }
+        } catch (err) {
+          console.log(err)
+        }
+      }, 1000)
+      /* this.socket.timeout(5000).emit('stock', {
+        user_no: this.user.user_no,
+        code: this.$route.params.code
+      }) */
     }
   },
   unmounted () {
@@ -81,6 +88,7 @@ export default {
     // this.socket.on('disconnect', () => {
     //   console.log('주식 연결 끊김')
     // })
+    clearInterval(this.stockDataTime)
   }
 }
 </script>

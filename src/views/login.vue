@@ -192,8 +192,8 @@ export default {
     mounted() {
         document.getElementById('username-field').focus();
         this.naverLogin = new window.naver.LoginWithNaverId({
-            clientId: "r9NXTBIyStgyYrmGeyTS",
-            callbackUrl: "http://localhost:8080/",
+            clientId: process.env.VUE_APP_NAVER_API_KEY,
+            callbackUrl: "http://localhost:8080/login/naverlogin",
             isPopup: false,
             loginButton: {
               color: "green", type: 1, height: 45
@@ -221,7 +221,7 @@ export default {
             }
         });
       },
-      
+
 };
 </script>
 <style scoped>
@@ -230,10 +230,10 @@ html {
 }
 
 .logo {
-  margin-left: 20px; 
+  margin-left: 20px;
   margin-top: 1px;
   margin-bottom: 1px;
-}  
+}
 #loginn{
   width:94px;
   height: 44px;
@@ -261,7 +261,7 @@ html {
   margin-left: 50px;
   margin-bottom: 10px;
   border: solid 1.5px  rgb(0, 0, 0);
-  text-align: center; 
+  text-align: center;
   border-radius: 8px;
   position: relative;
   font-family: 'GmarketSansMedium';
