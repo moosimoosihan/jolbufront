@@ -135,6 +135,18 @@
           ],
         }
       },
+      methods: {
+        deleteItem(item) {
+        this.editedIndex = this.desserts.indexOf(item)
+        this.editedItem = Object.assign({}, item)
+        this.dialogDelete = true
+      },
+
+      deleteItemConfirm() {
+        this.desserts.splice(this.editedIndex, 1)
+        this.closeDelete()
+      },
+      }
     }
   </script>
   
