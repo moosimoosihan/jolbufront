@@ -8,13 +8,14 @@
               min-height="85vh"
               rounded="lg"
             >
-              <v-select
-                label="Select"
-                :items="[10,20, 30, 40, 50]"
-                variant="underlined"
-                v-model="candleCount"
-                @change="getStockCandle(candleCode,candleCount)"
-              ></v-select>
+              <p>{{ candleCode }}</p>
+              <select class="candle_count" v-model="candleCount" @change="getStockCandle(candleCode, candleCount)">
+                <option value="10">10</option>
+                <option value="20">20</option>
+                <option value="30">30</option>
+                <option value="40">40</option>
+                <option value="50">50</option>
+              </select>
               <ApexCharts
                 class="chart"
                 ref="candleChart"
@@ -36,7 +37,7 @@
                 :hide-default-footer="true"
                 class="coin-table-wrapper">
                 <template v-slot:item="{ item }">
-                  <tr @click="getStockCandle(item.coin,candleCount)" class="coin_table">
+                  <tr @click="getStockCandle(item.coin, candleCount)" class="coin_table">
                     <td>{{ item.coin }}</td>
                     <td class="animation_table" :class="item.changeRate===0?'rate_black': item.changeRate>0?'rate_red':'rate_blue'">
                       {{ $currencyFormat(item.price) }}
@@ -100,7 +101,7 @@ export default {
   },
   created () {
     this.getStock()
-    this.getStockCandle(this.candleCode,this.candleCount)
+    this.getStockCandle(this.candleCode, this.candleCount)
   },
   computed: {
     user () {
@@ -162,13 +163,10 @@ export default {
         }
       }, 1000)
     },
-    format (num) {
-      return this.$currencyFormat(num)
-    },
     // 차트
     async getStockCandle (code,count) {
       this.candleCode = code
-      console.log(this.candleCode)
+      this.candleCount = count
       try {
         const res = await axios.get(`http://localhost:3000/stock/coin_info_candle/${code}`)
         this.candleData = res.data.data.splice(res.data.data.length - count, res.data.data.length)
@@ -234,5 +232,17 @@ export default {
 }
 .rate_blue{
   color: blue;
+}
+.candle_count {
+  width: 100%;
+  height: 30px;
+  margin: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 5px;
+  font-size: 15px;
+  font-weight: bold;
+  color: #666;
+  background-color: #fff;
 }
 </style>
