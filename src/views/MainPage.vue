@@ -29,8 +29,8 @@
           </v-col>
           <v-col cols="5">
             <v-sheet rounded="lg">
-              <v-data-table
-                height="100%"
+              <v-data-table-virtual
+                height="924"
                 width="100%"
                 :headers ="headers"
                 :items="coinData"
@@ -52,7 +52,7 @@
                     </td>
                   </tr>
                 </template>
-              </v-data-table>
+              </v-data-table-virtual>
             </v-sheet>
           </v-col>
         </v-row>
