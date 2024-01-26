@@ -1,63 +1,64 @@
 <template>
-  <div class="container">
-    <div class="logo">
-        <img :src="require('../assets/logo.png')" @click="gotoMain()">
-        <h1 class="singnupp">회원가입</h1>
-       <div id="box1">
-        <div class="name">
-          <span class="s">이름</span>
-          <input id="name" type="text" v-model="user_name" placeholder="이름을 입력해 주세요.">
-           <p class="alert_font">&nbsp;</p>
-        </div>
-        <div class="id">
-          <span class="s">아이디</span>
-          <input id="id" type="text" v-model="user_id" placeholder="아이디를 입력해 주세요." @input="id_check()">
-          <p class="alert_font" v-if="id_check_bool===1" style="color:red;">중복된 아이디입니다.</p>
-          <p class="alert_font" v-else-if="id_check_bool===2" style="color:red;">DB 에러 발생</p>
-          <p class="alert_font" v-else-if="id_check_bool===3">사용 가능한 아이디입니다.</p>
-          <p class="alert_font" v-else >&nbsp;</p>
-        </div>
-        <div class="password">
-          <span class="s">비밀번호</span>
-          <input id="password" type="password"  v-model="user_pw" placeholder="비밀번호를 입력해 주세요.(6자리 이상)">
-          <p class="alert_font" v-if="user_pw.length < 6 && user_pw.length!==0" style="color:red;">비밀번호는 6자리 이상으로 입력해주세요.</p>
-          <p class="alert_font">&nbsp;</p>
-        </div>
-        <div class="passwordCheck">
-          <span class="s">비밀번호 확인</span>
-          <input id="passwordCheck" type="password"  v-model="user_pw_ck" placeholder="비밀번호를 다시 입력해 주세요.">
-          <p class="alert_font" v-if="user_pw!==user_pw_ck" style="color:red;">비밀번호가 일치하지 않습니다.</p>
-          <p class="alert_font" v-else >&nbsp;</p>
-        </div>
-        <div class="email">
-          <span class="s">이메일</span>
-          <input id="email" type="text"  v-model="user_email" placeholder="이메일을 입력해 주세요." @input="email_check()">
-          <p class="alert_font" v-if="email_check_bool===1" style="color:red;">사용할 수 없는 이메일입니다.</p>
-          <p class="alert_font" v-else-if="email_check_bool===2">사용 가능한 이메일입니다.</p>
-          <p class="alert_font" v-else >&nbsp;</p>
-      </div>
-      <div class="pns">
-        <label for="pnspns" class="s">투자성향</label>
-       <select id="pnspns"  v-model="user_pns" >
-            <!-- 투자 성향 옵션들 -->
-                <option value="방어적인">방어적인</option>
-                <option value="보통">보통</option>
-                <option value="공격적인">공격적인</option>
-        </select>
-      </div>
-      <div id="box3">
-      <div>
-         <input type="checkbox" name="agree" value="agreed" class="radi1" checked/>
-        <label for="radi1">모두 동의합니다. [필수] 이용약관동의  [필수] 개인정보 수집 및 활용 동의
-       </label>
-      </div>
-      <div class="signUp">
-        <input type="submit" class="signUpButton" @click="onSubmitForm()" value="회원가입">
-    </div>
-    </div>
-    </div>
-   </div>
-</div>
+    <v-form class="root_container">
+        <v-container class="container">
+            <v-row class="logo">
+                <v-col>
+                    <img :src="require('../assets/logo.png')" @click="gotoMain()">
+                    <h1 class="singnupp">회원가입</h1>
+                </v-col>
+                <v-col class="name">
+                    <span class="s">이름</span>
+                    <v-text-field id="name" type="text" v-model="user_name" placeholder="이름을 입력해 주세요." />
+                    <p class="alert_font">&nbsp;</p>
+                </v-col>
+                <v-col class="id">
+                    <span class="s">아이디</span>
+                    <v-text-field id="id" type="text" v-model="user_id" placeholder="아이디를 입력해 주세요." @input="id_check()" />
+                    <p class="alert_font" v-if="id_check_bool===1" style="color:red;">중복된 아이디입니다.</p>
+                    <p class="alert_font" v-else-if="id_check_bool===2" style="color:red;">DB 에러 발생</p>
+                    <p class="alert_font" v-else-if="id_check_bool===3">사용 가능한 아이디입니다.</p>
+                    <p class="alert_font" v-else >&nbsp;</p>
+                </v-col>
+                <v-col class="password">
+                    <span class="s">비밀번호</span>
+                    <v-text-field id="password" type="password"  v-model="user_pw" placeholder="비밀번호를 입력해 주세요.(6자리 이상)" />
+                    <p class="alert_font" v-if="user_pw.length < 6 && user_pw.length!==0" style="color:red;">비밀번호는 6자리 이상으로 입력해주세요.</p>
+                    <p class="alert_font">&nbsp;</p>
+                </v-col>
+                <v-col class="passwordCheck">
+                    <span class="s">비밀번호 확인</span>
+                    <v-text-field id="passwordCheck" type="password"  v-model="user_pw_ck" placeholder="비밀번호를 다시 입력해 주세요." />
+                    <p class="alert_font" v-if="user_pw!==user_pw_ck" style="color:red;">비밀번호가 일치하지 않습니다.</p>
+                    <p class="alert_font" v-else >&nbsp;</p>
+                </v-col>
+                <v-row>
+                <v-col class="email">
+                    <span class="s">이메일</span>
+                    <v-text-field id="email" type="text"  v-model="user_email" placeholder="이메일을 입력해 주세요." @input="email_check()" />
+                    <p class="alert_font" v-if="email_check_bool===1" style="color:red;">사용할 수 없는 이메일입니다.</p>
+                    <p class="alert_font" v-else-if="email_check_bool===2">사용 가능한 이메일입니다.</p>
+                    <p class="alert_font" v-else >&nbsp;</p>
+                </v-col>
+                </v-row>
+                <v-row>
+                <v-col class="pns">
+                    <p class="s">투자성향</p>
+                    <v-select v-model="user_pns" :items="['방어적인','보통','공격적인']" />
+                </v-col>
+                </v-row>
+                <v-col id="box3">
+                    <div calss="checkbox">
+                        <input type="checkbox" name="agree" value="agreed" class="radi1" checked/>
+                        <label for="radi1">모두 동의합니다.
+                        </label>
+                    </div>
+                    <div class="signUp">
+                        <input type="submit" class="signUpButton" @click="onSubmitForm()" value="회원가입">
+                    </div>
+                </v-col>
+            </v-row>
+        </v-container>
+    </v-form>
 </template>
 <script>
 import axios from 'axios';
@@ -233,40 +234,38 @@ export default {
     padding: 0;
     box-sizing: border-box;
 }
+
 .pns{
     align-items: center;
     justify-content: center;
-    margin: 0 auto;
 }
 .pns select {
-    float:right;
-    width: 329px;
     line-height: 35px;
     font-size: 12px;
-    padding-left: 10px;
-    border: 1px solid rgb(255, 0, 0);
-    border-radius: 10px;
 }
 .logo img {
-    width: 144px;
-    height: 60px;
     display: flex;
-    margin-left: 86px;
+    margin-left: 50px;
+    margin-top: 20px;
+    width: 180px;
 }
-.container {
-  width: 1030px;
-  margin: 0 auto;
+.root_container {
   display: flex;
-  flex-direction: column;
-  align-items: center;
   justify-content: center;
+  align-items: center;
+}
+
+.container {
+  width: 300px;
 }
 div {
-    padding-top: 6px;
+    padding-top: 10px;
+    margin-right: 50px;
+    width:450px;
+
 }
-#box1 .addressz input {
-    float:right;
-    width: 300px;
+.container .addressz input {
+    width: 3%;
     line-height: 35px;
     font-size: 12px;
     color: white;
@@ -282,28 +281,20 @@ div {
     border-radius: 10px;
     cursor: pointer;
 }
-#box1 input {
+.container input {
     margin-left: 10px;
     width:329px;
     line-height: 35px;
     font-size: 12px;
     padding-left: 10px;
-    float: right;
     color: rgb(137, 137, 137);
     border: 2px solid rgb(221, 221, 221);
     border-radius: 10px;
 }
-#box1 {
-    width: 329px;
-    height: 500px;
-    float: left;
-}
 /* 버튼컨테이너 */
 #box3 {
-  margin-top: 30px;
   width: 329px;
   height: 150px;
-  float: left;
 }
 .alert_font{
     font-size: 10px;
@@ -314,13 +305,13 @@ input:focus {
     outline: 2px solid rgb(112, 86, 246);
 }
 .s {
-    margin-left: 13px;
-    font-size: 16px;
-    font-weight:900; /* 더 굵게 설정 */
+    margin-left: 11px;
+    font-size: 21px;
+    font-weight:500; /* 더 굵게 설정 */
 }
 #box3 div input {
-     font-size: 12px; /* 원하는 크기로 조절 */
-     margin-right: 5px;/* 라디오 버튼과 라벨 사이의 간격을 조절 */
+     font-size: 16px; /* 원하는 크기로 조절 */
+     margin-right: 10px;/* 라디오 버튼과 라벨 사이의 간격을 조절 */
 }
 
 #box3 div label {
@@ -330,10 +321,14 @@ input:focus {
 }
 .singnupp{
     margin-top: 60px;
-    margin-left: 110px;
+    margin-bottom: 30px;
+    margin-left: 85px;
 }
-.radi1{
-    margin-top: 3px;
-}
+/* .radi1{
+    margin-left: -150px;
+} */
 
+.checkbox{
+    margin-right: 100px;
+}
 </style>
