@@ -36,20 +36,18 @@
                 :items="coinData"
                 :hide-default-footer="true"
                 class="coin-table-wrapper">
-                <template v-slot:item="{ item }">
-                  <tr @click="getStockCandle(item.coin, candleCount)" class="coin_table">
-                    <td>{{ item.coin }}</td>
+                <template v-slot:item="{ item, index }">
+                  <tr class="coin_table">
+                    <td @click="getStockCandle(item.coin, candleCount)">{{ item.coin }}</td>
                     <td class="animation_table" :class="item.changeRate===0?'rate_black': item.changeRate>0?'rate_red':'rate_blue'">
                       {{ $currencyFormat(item.price) }}
                     </td>
                     <td>{{ item.volume }}</td>
                     <td :class="item.changeRate===0?'rate_black': item.changeRate>0?'rate_red':'rate_blue'">{{ item.changeRate }}</td>
                     <td>
-                      <v-icon color="success" icon="mdi-plus" size="x-small" @click="addToLike(item)">
+                      <v-icon v-if="!likeList.includes(item.coin)" color="success" icon="mdi-plus" size="x-small" @click="addToLike(item.coin)">
                       </v-icon>
-                    </td>
-                    <td>
-                      <v-icon color="success" icon="mdi-minus" size="x-small" @click="deleteToLike(item)">
+                      <v-icon v-else color="success" icon="mdi-minus" size="x-small" @click="deleteToLike(item.coin)">
                       </v-icon>
                     </td>
                   </tr>
@@ -77,7 +75,6 @@ export default {
         { title: '거래량', value: 'volume', align: 'center' },
         { title: '변동률', value: 'changeRate', align: 'center' },
         { title: '찜', value: 'like', align: 'center' },
-        { title: '삭제', value: 'delete', align: 'center' }
       ],
       coinData: [],
       candleData: [],
@@ -96,7 +93,9 @@ export default {
       },
       user_no: '',
       stock_name: '',
-      stock_aicontent: ''
+      stock_aicontent: '',
+
+      likeList: [],
     }
   },
   created () {
@@ -109,43 +108,71 @@ export default {
     }
   },
   methods: {
-    deleteToLike(item) {
-      const userNo = this.user.user_no; // 사용자 번호 (실제 값으로 대체)
-      const stockName = item.coin; // 종목명
-      axios.post('http://localhost:3000/stock/delete_like', {
-        user_no: userNo,
-        stock_name: stockName,
-      })
-        .then(response => {
-          if (response.data.success) {
-            this.$swal('찜하기 삭제 성공', '', 'success');
-            console.log('찜하기 삭제 성공');
-          } else {
-            console.log('찜하기 삭제 실패');
-          }
+    async deleteToLike(item) {
+      if(this.user.user_no==='') {
+        this.$swal('로그인이 필요합니다.', '', 'warning');
+        return;
+      }
+      try{
+        const userNo = this.user.user_no; // 사용자 번호 (실제 값으로 대체)
+        const stockName = item; // 종목명
+        const response = await axios.post('http://localhost:3000/stock/delete_like', {
+          user_no: userNo,
+          stock_name: stockName,
         })
-        .catch(error => {
-          console.error('찜하기 삭제 중에 오류가 발생했습니다.', error);
-        });
+        if (response.data.success) {
+          this.$swal('찜하기 삭제 성공', '', 'success');
+          await this.checkLike()
+        } else {
+          console.log('찜하기 삭제 실패');
+        }
+      } catch(error) {
+        console.error('찜하기 삭제 중에 오류가 발생했습니다.', error);
+      }
     },
-    addToLike(item) {
-      const userNo = this.user.user_no; // 사용자 번호 (실제 값으로 대체)
-      const stockName = item.coin; // 종목명
-      axios.post('http://localhost:3000/stock/add_like', {
-        user_no: userNo,
-        stock_name: stockName,
-      })
-        .then(response => {
-          if (response.data.success) {
-            this.$swal('찜하기 성공', '', 'success');
-            console.log('찜하기 성공');
-          } else {
-            console.log('찜하기 실패');
-          }
+    async addToLike(item) {
+      if(this.user.user_no==='') {
+        this.$swal('로그인이 필요합니다.', '', 'warning');
+        return;
+      }
+      try{
+        const userNo = this.user.user_no; // 사용자 번호 (실제 값으로 대체)
+        const stockName = item; // 종목명
+        const response = await axios.post('http://localhost:3000/stock/add_like', {
+          user_no: userNo,
+          stock_name: stockName,
         })
-        .catch(error => {
-          console.error('찜하기 중에 오류가 발생했습니다.', error);
-        });
+        if (response.data.success) {
+          this.$swal('찜하기 성공', '', 'success');
+          await this.checkLike()
+        } else {
+          console.log('찜하기 실패');
+        }
+      } catch(error) {
+        console.error('찜하기 중에 오류가 발생했습니다.', error);
+      }
+    },
+    async checkLike() {
+      if(this.user.user_no==='') {
+        return false;
+      }
+      try{
+        const userNo = this.user.user_no; // 사용자 번호 (실제 값으로 대체)
+        const response = await axios.post('http://localhost:3000/stock/check_like', {
+          user_no: userNo,
+        })
+        if(response.data.success){
+          // json 형태로 받아온 데이터를 배열로 변환
+          this.likeList= []
+          for(var i=0; i<response.data.result.length; i++){
+            this.likeList.push(response.data.result[i].STOCK_NAME)
+          }
+        } else {
+          this.likeList = []
+        }
+      } catch (error) {
+        console.error('찜하기 불러오기 오류가 발생했습니다.', error);
+      }
     },
     async getStock () {
       this.stockDataTime = setInterval(async () => {
@@ -162,6 +189,7 @@ export default {
           console.log(err)
         }
       }, 1000)
+      await this.checkLike()
     },
     // 차트
     async getStockCandle (code,count) {
