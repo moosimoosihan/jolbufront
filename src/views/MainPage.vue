@@ -13,7 +13,7 @@
                 :items="[10,20, 30, 40, 50]"
                 variant="underlined"
                 v-model="candleCount"
-                :select="getStockCandle(candleCode,candleCount)"
+                @change="getStockCandle(candleCode,candleCount)"
               ></v-select>
               <ApexCharts
                 class="chart"
@@ -33,13 +33,24 @@
                 width="100%"
                 :headers ="headers"
                 :items="coinData"
-                :hide-default-footer="true">
+                :hide-default-footer="true"
+                class="coin-table-wrapper">
                 <template v-slot:item="{ item }">
                   <tr @click="getStockCandle(item.coin,candleCount)" class="coin_table">
                     <td>{{ item.coin }}</td>
-                    <td>{{ $currencyFormat(item.price) }}</td>
+                    <td class="animation_table" :class="item.changeRate===0?'rate_black': item.changeRate>0?'rate_red':'rate_blue'">
+                      {{ $currencyFormat(item.price) }}
+                    </td>
                     <td>{{ item.volume }}</td>
                     <td :class="item.changeRate===0?'rate_black': item.changeRate>0?'rate_red':'rate_blue'">{{ item.changeRate }}</td>
+                    <td>
+                      <v-icon color="success" icon="mdi-plus" size="x-small" @click="addToLike(item)">
+                      </v-icon>
+                    </td>
+                    <td>
+                      <v-icon color="success" icon="mdi-minus" size="x-small" @click="deleteToLike(item)">
+                      </v-icon>
+                    </td>
                   </tr>
                 </template>
               </v-data-table>
@@ -63,7 +74,9 @@ export default {
         { title: '코인', value: 'coin', align: 'center' },
         { title: '가격', value: 'price', align: 'center' },
         { title: '거래량', value: 'volume', align: 'center' },
-        { title: '변동률', value: 'changeRate', align: 'center' }
+        { title: '변동률', value: 'changeRate', align: 'center' },
+        { title: '찜', value: 'like', align: 'center' },
+        { title: '삭제', value: 'delete', align: 'center' }
       ],
       coinData: [],
       candleData: [],
@@ -80,6 +93,9 @@ export default {
           }
         }
       },
+      user_no: '',
+      stock_name: '',
+      stock_aicontent: ''
     }
   },
   created () {
@@ -92,6 +108,44 @@ export default {
     }
   },
   methods: {
+    deleteToLike(item) {
+      const userNo = this.user.user_no; // 사용자 번호 (실제 값으로 대체)
+      const stockName = item.coin; // 종목명
+      axios.post('http://localhost:3000/stock/delete_like', {
+        user_no: userNo,
+        stock_name: stockName,
+      })
+        .then(response => {
+          if (response.data.success) {
+            this.$swal('찜하기 삭제 성공', '', 'success');
+            console.log('찜하기 삭제 성공');
+          } else {
+            console.log('찜하기 삭제 실패');
+          }
+        })
+        .catch(error => {
+          console.error('찜하기 삭제 중에 오류가 발생했습니다.', error);
+        });
+    },
+    addToLike(item) {
+      const userNo = this.user.user_no; // 사용자 번호 (실제 값으로 대체)
+      const stockName = item.coin; // 종목명
+      axios.post('http://localhost:3000/stock/add_like', {
+        user_no: userNo,
+        stock_name: stockName,
+      })
+        .then(response => {
+          if (response.data.success) {
+            this.$swal('찜하기 성공', '', 'success');
+            console.log('찜하기 성공');
+          } else {
+            console.log('찜하기 실패');
+          }
+        })
+        .catch(error => {
+          console.error('찜하기 중에 오류가 발생했습니다.', error);
+        });
+    },
     async getStock () {
       this.stockDataTime = setInterval(async () => {
         try {
@@ -143,6 +197,24 @@ export default {
 }
 </script>
 <style scoped>
+.animation_table {
+  transition: all 0.5s;
+}
+.coin_table thead th {
+  white-space: nowrap;
+}
+
+.coin_table tbody th,
+.coin_table tbody td {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.coin-table-wrapper {
+  /* 원하는 크기로 조정하세요 */
+  min-height: 300px;
+  min-width: 550px;
+}
 .table-container {
   display: flex;
   justify-content: center;
@@ -151,6 +223,8 @@ export default {
 }
 .coin_table {
   text-align: center;
+  width: 100%;
+  table-layout: fixed;
 }
 .rate_black{
   color: black;
