@@ -1,6 +1,9 @@
 <template>
   <div class="table-container">
     <v-main>
+      <div class="loading" v-if="loading">
+        <v-progress-circular indeterminate color="primary"></v-progress-circular>
+      </div>
       <v-container>
         <v-row>
           <v-col cols="7">
@@ -28,22 +31,31 @@
             </v-sheet>
           </v-col>
           <v-col cols="5">
+            <v-row class="ml-5">
+              <v-text-field class="mt-6 ml-5" v-model="searchKeyword" clearable @input="getListStock(searchKeyword)" ></v-text-field>
+            </v-row>
             <v-sheet rounded="lg">
               <v-data-table-virtual
-                height="924"
+                height="800"
                 width="100%"
                 :headers ="headers"
                 :items="coinData"
                 :hide-default-footer="true"
                 class="coin-table-wrapper">
-                <template v-slot:item="{ item, index }">
+                <template v-slot:item="{ item }">
                   <tr class="coin_table">
-                    <td @click="getStockCandle(item.coin, candleCount)">{{ item.coin }}</td>
-                    <td class="animation_table" :class="item.changeRate===0?'rate_black': item.changeRate>0?'rate_red':'rate_blue'">
+                    <td @click="getStockCandle(item.coin, candleCount)">
+                      {{ item.coin }}
+                    </td>
+                    <td @click="getStockCandle(item.coin, candleCount)" class="animation_table" :class="item.changeRate===0?'rate_black': item.changeRate>0?'rate_red':'rate_blue'">
                       {{ $currencyFormat(item.price) }}
                     </td>
-                    <td>{{ item.volume }}</td>
-                    <td :class="item.changeRate===0?'rate_black': item.changeRate>0?'rate_red':'rate_blue'">{{ item.changeRate }}</td>
+                    <td @click="getStockCandle(item.coin, candleCount)">
+                      {{ item.volume }}
+                    </td>
+                    <td @click="getStockCandle(item.coin, candleCount)" :class="item.changeRate===0?'rate_black': item.changeRate>0?'rate_red':'rate_blue'">
+                      {{ item.changeRate }}
+                    </td>
                     <td>
                       <v-icon v-if="!likeList.includes(item.coin)" color="success" icon="mdi-plus" size="x-small" @click="addToLike(item.coin)">
                       </v-icon>
@@ -96,6 +108,10 @@ export default {
       stock_aicontent: '',
 
       likeList: [],
+
+      searchKeyword: '종목명을 입력하세요',
+
+      loading: false,
     }
   },
   created () {
@@ -174,11 +190,27 @@ export default {
         console.error('찜하기 불러오기 오류가 발생했습니다.', error);
       }
     },
-    async getStock () {
+    async getListStock(code) {
+      // 영어가 아니라면 검색하지 않음
+      if(!/^[a-zA-Z]*$/.test(code)) {
+        return;
+      }
+      if(code==='종목명을 입력하세요') {
+        return;
+      }
+      if(code==='') {
+        await this.getStock()
+        return;
+      }
+      this.loading = true
+      clearInterval(this.stockDataTime)
+      this.coinData = []
       this.stockDataTime = setInterval(async () => {
-        try {
-          const res = await axios.get('http://localhost:3000/stock/all_coin_info')
-          this.coinData = Object.entries(res.data.data)
+        try{
+          const res = await axios.post('http://localhost:3000/stock/coin_info',{
+            code: code
+          })
+          this.coinData = Object.entries(res.data)
             .map(([coin, info]) => ({
               coin,
               price: info.closing_price,
@@ -189,10 +221,33 @@ export default {
           console.log(err)
         }
       }, 1000)
+      this.loading = false
+    },
+    async getStock () {
+      this.loading = true
+      clearInterval(this.stockDataTime)
+      this.coinData = []
+      this.stockDataTime = setInterval(async () => {
+        try {
+          const res = await axios.get('http://localhost:3000/stock/all_coin_info')
+          this.coinData = Object.entries(res.data.data)
+            .map(([coin, info]) => ({
+              coin,
+              price: info.closing_price,
+              volume: info.units_traded,
+              changeRate: info.fluctate_rate_24H
+            }))
+          this.coinData.pop()
+        } catch (err) {
+          console.log(err)
+        }
+      }, 1000)
+      this.loading = false
       await this.checkLike()
     },
     // 차트
     async getStockCandle (code,count) {
+      this.loading = true
       this.candleCode = code
       this.candleCount = count
       try {
@@ -215,7 +270,8 @@ export default {
       this.candleChartSeries = [{
         data: cdtemp
       }]
-    }
+      this.loading = false
+    },
   },
   unmounted () {
     clearInterval(this.stockDataTime)
@@ -272,5 +328,21 @@ export default {
   font-weight: bold;
   color: #666;
   background-color: #fff;
+}
+.loading {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 100px;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 9999;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 </style>
