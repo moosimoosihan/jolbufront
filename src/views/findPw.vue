@@ -7,13 +7,12 @@
       <span>{{ currentTitle }}</span>
       <v-avatar color="primary" size="24" v-text="step"></v-avatar>
     </v-card-title>
-
     <v-window v-model="step">
       <v-window-item :value="1">
         <v-card-text>
           <v-text-field
-            v-model="user.email"
-            label="이메일"
+            v-model="email"
+            label="Email"
             placeholder="john@google.com"
           ></v-text-field>
           <span class="text-caption text-grey-darken-1">
@@ -21,109 +20,115 @@
           </span>
         </v-card-text>
       </v-window-item>
-
       <v-window-item :value="2">
         <v-card-text>
-          <v-text-field v-model="user.name" label="이름"></v-text-field>
+          <v-text-field
+            v-model="name"
+            label="name"
+            type="password"
+          ></v-text-field>
           <span class="text-caption text-grey-darken-1">
             가입할 당시 입력한 이름을 입력해주세요.
           </span>
         </v-card-text>
       </v-window-item>
-
       <v-window-item :value="3">
         <div class="pa-4 text-center">
-          <v-img
-            class="mb-4"
-            contain
-            height="48"
-            width="70"
-            position="center"
-            src="../assets/logo.png"
-          ></v-img>
-          <h3
-            class="text-h6 font-weight-light mb-2"
-            style="padding-bottom: 6%; padding-top: -10%"
-          >
-            가입하신 아이디는 {{ user.id }} 입니다.
+          <v-img class="mb-4" contain height="128" src="../assets/logo.png"></v-img>
+          <h3 class="text-h6 font-weight-light mb-2">
+            임시 비밀번호는 {{ password }} 입니다.
           </h3>
+          <span class="text-caption text-grey">로그인 후 꼭 변경해주세요.</span>
         </div>
       </v-window-item>
     </v-window>
-
     <v-divider></v-divider>
-
     <v-card-actions>
-      <v-btn v-if="step > 1" variant="text" @click="step--">뒤로 가기</v-btn>
+      <v-btn v-if="step > 1" variant="text" @click="step--"> Back </v-btn>
       <v-spacer></v-spacer>
-      <v-btn
-        v-if="step < 3"
-        color="primary"
-        variant="flat"
-        @click="findId()"
-      >
-        다음
-      </v-btn>
+      <v-btn v-if="step < 3"color="primary" variant="flat" @click="step < 2 ? step++ : findPW()" > Next</v-btn>
     </v-card-actions>
   </v-card>
 </template>
-
 <script>
 import axios from "axios";
+
 export default {
-  data: () => {
+  data() {
     return {
       step: 1,
-      user: {
-        email: '',
-        name: '',
-        id: ''
-      }
-    }
+      id: "",
+      password: "",
+      name: "",
+      email: "",
+      search_user_id: "", // id 찾기로 받은 아이디
+      response_id_check: false,
+      response_pw_check: false,
+    };
   },
-
-  // REST API / PATH PARAMETER , QUERY PARAMETER / HTTP METHOD(GET, POST, PUT, DELETE
-
   computed: {
+    user() {
+      return this.$store.state.user;
+    },
     currentTitle() {
       switch (this.step) {
         case 1:
-          return "이메일을 입력하세요";
+          return "이메일을 입력해주세요";
         case 2:
-          return "이름을 입력하세요";
+          return "이름을 입력해주세요";
         default:
-          return "성공";
+          return "비밀번호 확인해주세요";
       }
     },
   },
-
   methods: {
-    findId() {
+    findPW() {
+      console.log(this.email);
+      console.log(this.name);
       if (this.step === 1) {
-        this.step++;
+        if (this.email === "" || !this.isValidEmail(this.email)) {
+          this.$swal("유효한 이메일을 입력해주세요");
+        } else {
+          this.step++;
+        }
       } else if (this.step === 2) {
-        // 이름 입력 단계에서 다음 버튼을 클릭한 경우
-        // 이름과 관련된 백엔드 API를 호출하여 해당 이름에 대한 아이디를 가져옵니다.
-        axios
-          .post(`http://localhost:3000/auth/findId?email=${this.user.email}&name=${this.user.name}`, )
-          .then(response => {
-            // API 응답에서 받은 아이디를 사용자 객체에 저장합니다.
-            this.user.id = response.data.user_id;
-            this.step++; // 다음 단계로 이동합니다.
-          })
-          .catch(error => {
-            console.error(error);
-            // 에러 처리 로직을 추가하세요.
-          });
+        if (this.name === "") {
+          this.$swal("이름을 입력해주세요");
+        } else {
+          axios
+            .post("http://localhost:3000/auth/find_pass", {
+              email: this.email,
+              name: this.name,
+            })
+            .then((res) => {
+              this.password = res.data.message;
+              this.response_pw_check = true;
+              this.step++; // API 호출이 성공하면 step을 증가시킵니다.
+            })
+            .catch((error) => {
+              console.log(error);
+              this.$swal("정보 확인에 실패했습니다.");
+            });
+        }
       }
+    },
+    isValidEmail(email) {
+      const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      return emailPattern.test(email);
     },
   },
 };
 </script>
-
 <style scoped>
+@import url("https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@200&display=swap");
+
 .id_Header {
   margin-top: 50px;
   margin-bottom: 50px;
+  font-family: "Noto Serif KR", sans-serif;
+}
+.mb-4{
+  width:100px;
+  height:50px;
 }
 </style>
