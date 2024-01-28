@@ -8,7 +8,12 @@
         <v-row>
           <v-col cols="6">
             <v-sheet min-height="90vh" rounded="lg">
-              <h1>{{ candleCode }}</h1>
+              <div :class="selectRate==0?'rate_black': selectRate>0?'rate_red':'rate_blue'">
+                <h1>{{ candleCode }}</h1>
+                <h1>{{ $currencyFormat(selectPrice) }}</h1>
+                <span>{{selectRate>0?'+':''}}{{ selectRate }}% </span>
+                <span>{{ $currencyFormat(selectAmount) }}</span>
+              </div>
               <p>캔들 갯수</p>
               <select class="select" v-model="candleCount" @change="getStockCandle(candleCode, candleCount, candleTime)">
                 <option value="10" selected>10</option>
@@ -49,8 +54,8 @@
             </v-sheet>
           </v-col>
           <v-col cols="6">
-            <v-btn :variant="myStock? 'plain':'tonal'" width="50%" :color="myStock?'grey':'black'" @click="myStockToggle(false)">전체종목</v-btn>
-            <v-btn :variant="myStock? 'tonal':'plain'" width="50%" :color="myStock?'black':'grey'" @click="myStockToggle(true)">찜한종목</v-btn>
+            <v-btn :variant="myStock? 'outlined':'tonal'" width="50%" :color="myStock?'grey':'black'" @click="myStockToggle(false)">전체종목</v-btn>
+            <v-btn :variant="myStock? 'tonal':'outlined'" width="50%" :color="myStock?'black':'grey'" @click="myStockToggle(true)">찜한종목</v-btn>
             <p>정렬 방식</p>
             <select class="select" @change="sortTable()" v-model="sortValue">
               <option value="price">가격</option>
@@ -64,7 +69,7 @@
             </select>
             <v-sheet rounded="lg">
               <v-data-table-virtual
-                height="85vh"
+                height="100vh"
                 width="100%"
                 :headers ="headers"
                 :items="coinData"
@@ -73,7 +78,6 @@
                 :sort-by="sortBy"
                 :search="searchKeyword"
                 :no-data-text="myStock?'찜한 종목이 없습니다.':'종목이 없습니다.'"
-                :custom-filter="filterOnlyCapsText"
               >
                 <template v-slot:top>
                   <v-text-field v-model="searchKeyword" placeholder="종목명을 입력하세요" clearable hide-details></v-text-field>
@@ -90,7 +94,8 @@
                       {{ Math.floor(item.volume) }}
                     </td>
                     <td @click="getStockCandle(item.coin, candleCount, candleTime)">
-                      {{ item.changeRate }}
+                      <p>{{item.changePrice>0?'+':''}}{{ $currencyFormat(item.changePrice) }}</p>
+                      <p>{{ item.changeRate }}%</p>
                     </td>
                     <td>
                       <v-icon v-if="!likeList.includes(item.coin)" color="success" icon="mdi-plus" size="x-small" @click="addToLike(item.coin)">
@@ -134,23 +139,71 @@ export default {
       candleCount: 10,
       candleTime: '24h',
       candleCode: 'BTC',
+      selectPrice: '',
+      selectAmount: '',
+      selectRate: '',
       candleChartSeries:[],
       barChartSeries: [],
       candleChartOptions: {
-        candlestick: {
-          colors: {
-            upward: '#3C90EB',
-            downward: '#DF7D46'
+        chart: {
+          id: 'candleChart',
+          type: 'candlestick',
+          toolbar: {
+            show: false,
+            tools: {
+              download: false,
+              zoom: false,
+              zoomin: false,
+              zoomout: false,
+              pan: false,
+              reset: false,
+              customIcons: []
+            },
+          },
+          animations: {
+            enabled: false
+          },
+        },
+        plotOptions: {
+          candlestick: {
+            colors: {
+              upward: '#FF0000',
+              downward: '#0000FF'
+            }
           }
-        }
+        },
+        tooltip: {
+          enabled: false
+        },
       },
       barChartOptions: {
-        bar: {
-          colors: {
-            ranges: [{
-              color: '#3C90EB'
-            }]
+        chart:{
+          id: 'barChart',
+          type: 'bar',
+          toolbar: {
+            show: false,
+            tools: {
+              download: false,
+              zoom: false,
+              zoomin: false,
+              zoomout: false,
+              pan: false,
+              reset: false,
+              customIcons: []
+            },
+          },
+          animations: {
+            enabled: false
+          },
+        },
+        colors: ['#ff9e2b'],
+        plotOptions: {
+          bar: {
+            columnWidth: '50%',
           }
+        },
+        tooltip: {
+          enabled: false
         }
       },
       user_no: '',
@@ -164,9 +217,6 @@ export default {
       loading: false,
 
       myStock: false,
-
-      lowPrice: '',
-      highPrice: '',
     }
   },
   created () {
@@ -256,6 +306,7 @@ export default {
                 coin,
                 price: info.closing_price,
                 volume: info.units_traded,
+                changePrice: info.fluctate_24H,
                 changeRate: info.fluctate_rate_24H
               }))
             this.coinData.pop()
@@ -282,6 +333,7 @@ export default {
                   coin,
                   price: info.closing_price,
                   volume: info.units_traded,
+                  changePrice: info.fluctate_24H,
                   changeRate: info.fluctate_rate_24H
                 }))
               this.coinData.push(data[0])
@@ -300,13 +352,16 @@ export default {
       this.candleCode = code
       this.candleCount = count
       this.candleTime = time
-      try {
-        const res = await axios.get(`http://localhost:3000/stock/coin_info_candle/${code}/${time}`)
-        this.candleData = res.data.data.splice(res.data.data.length - count, res.data.data.length)
-      } catch (err) {
-        console.log(err)
-      }
-      this.drawChart()
+      clearInterval(this.stockDataTimeCandle)
+      this.stockDataTimeCandle = setInterval(async () => {
+        try {
+          const res = await axios.get(`http://localhost:3000/stock/coin_info_candle/${code}/${time}`)
+          this.candleData = res.data.data.splice(res.data.data.length - count, res.data.data.length)
+        } catch (err) {
+          console.log(err)
+        }
+        this.drawChart()
+      }, 1000)
     },
     drawChart () {
       const cd = this.candleData
@@ -321,6 +376,11 @@ export default {
           x: this.$formatDateTime(cd[i][0],this.candleTime!=='24h'),
           y: Math.floor(cd[i][5])
         })
+        if(cd[cd.length-1]){
+          this.selectPrice = cd[cd.length-1][2]
+          this.selectAmount = cd[cd.length-1][2]-cd[cd.length-1][1]
+          this.selectRate = ((cd[cd.length-1][2]-cd[cd.length-1][1])/cd[cd.length-1][1]*100).toFixed(2)
+        }
       }
       this.candleChartSeries = [{
         name: '캔들',
@@ -348,6 +408,7 @@ export default {
   },
   unmounted () {
     clearInterval(this.stockDataTime)
+    clearInterval(this.stockDataTimeCandle)
   }
 }
 </script>
