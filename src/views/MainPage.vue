@@ -6,33 +6,56 @@
       </div>
       <v-container>
         <v-row>
-          <v-col cols="7">
+          <v-col cols="6">
             <v-sheet
               min-height="85vh"
               rounded="lg"
             >
               <p>{{ candleCode }}</p>
-              <select class="candle_count" v-model="candleCount" @change="getStockCandle(candleCode, candleCount)">
-                <option value="10">10</option>
+              <p>캔들 갯수</p>
+              <select class="candle_count" v-model="candleCount" @change="getStockCandle(candleCode, candleCount, candleTime)">
+                <option value="10" selected>10</option>
                 <option value="20">20</option>
                 <option value="30">30</option>
                 <option value="40">40</option>
                 <option value="50">50</option>
               </select>
+              <select class="candle_count" v-model="candleTime" @change="getStockCandle(candleCode, candleCount, candleTime)">
+                <option value="24h" selected>일</option>
+                <option value="12h">12시간</option>
+                <option value="6h">6시간</option>
+                <option value="1h">1시간</option>
+                <option value="30m">30분</option>
+                <option value="10m">10분</option>
+                <option value="5m">5분</option>
+                <option value="3m">3분</option>
+                <option value="1m">1분</option>
+              </select>
               <ApexCharts
                 class="chart"
                 ref="candleChart"
                 type="candlestick"
-                height="100%"
+                height="80%"
                 width="100%"
                 :options="candleChartOptions"
                 :series="candleChartSeries"
               />
+              <ApexCharts
+                class="chart"
+                ref="barChart"
+                type="bar"
+                height="20%"
+                width="100%"
+                :options="barChartOptions"
+                :series="barChartSeries"
+              />
             </v-sheet>
           </v-col>
-          <v-col cols="5">
+          <v-col cols="6">
+            <v-btn variant="plain" width="50%" :color="myStock?'grey':'black'" @click="myStockToggle(false)">전체종목</v-btn>
+            <v-btn variant="plain" width="50%" :color="myStock?'black':'grey'" @click="myStockToggle(true)">찜한종목</v-btn>
             <v-row class="ml-5">
-              <v-text-field class="mt-6 ml-5" v-model="searchKeyword" clearable @input="getListStock(searchKeyword)" ></v-text-field>
+              <v-text-field class="mt-6" v-model="searchKeyword" placeholder="종목명을 입력하세요" clearable @input="getListStock(searchKeyword)" :readonly="myStock" ></v-text-field>
             </v-row>
             <v-sheet rounded="lg">
               <v-data-table-virtual
@@ -44,16 +67,16 @@
                 class="coin-table-wrapper">
                 <template v-slot:item="{ item }">
                   <tr class="coin_table">
-                    <td @click="getStockCandle(item.coin, candleCount)">
+                    <td @click="getStockCandle(item.coin, candleCount, candleTime)">
                       {{ item.coin }}
                     </td>
-                    <td @click="getStockCandle(item.coin, candleCount)" class="animation_table" :class="item.changeRate===0?'rate_black': item.changeRate>0?'rate_red':'rate_blue'">
+                    <td @click="getStockCandle(item.coin, candleCount, candleTime)" class="animation_table" :class="item.changeRate===0?'rate_black': item.changeRate>0?'rate_red':'rate_blue'">
                       {{ $currencyFormat(item.price) }}
                     </td>
-                    <td @click="getStockCandle(item.coin, candleCount)">
+                    <td @click="getStockCandle(item.coin, candleCount, candleTime)">
                       {{ item.volume }}
                     </td>
-                    <td @click="getStockCandle(item.coin, candleCount)" :class="item.changeRate===0?'rate_black': item.changeRate>0?'rate_red':'rate_blue'">
+                    <td @click="getStockCandle(item.coin, candleCount, candleTime)" :class="item.changeRate===0?'rate_black': item.changeRate>0?'rate_red':'rate_blue'">
                       {{ item.changeRate }}
                     </td>
                     <td>
@@ -93,13 +116,24 @@ export default {
       stockDataTime: null,
       stockDataTimeCandle: null,
       candleCount: 10,
+      candleTime: '24h',
       candleCode: 'BTC',
       candleChartSeries:[],
+      barChartSeries: [],
       candleChartOptions: {
         candlestick: {
           colors: {
             upward: '#3C90EB',
             downward: '#DF7D46'
+          }
+        }
+      },
+      barChartOptions: {
+        bar: {
+          colors: {
+            ranges: [{
+              color: '#3C90EB'
+            }]
           }
         }
       },
@@ -109,14 +143,16 @@ export default {
 
       likeList: [],
 
-      searchKeyword: '종목명을 입력하세요',
+      searchKeyword: '',
 
       loading: false,
+
+      myStock: false,
     }
   },
   created () {
     this.getStock()
-    this.getStockCandle(this.candleCode, this.candleCount)
+    this.getStockCandle(this.candleCode, this.candleCount, this.candleTime)
   },
   computed: {
     user () {
@@ -227,51 +263,101 @@ export default {
       this.loading = true
       clearInterval(this.stockDataTime)
       this.coinData = []
-      this.stockDataTime = setInterval(async () => {
-        try {
-          const res = await axios.get('http://localhost:3000/stock/all_coin_info')
-          this.coinData = Object.entries(res.data.data)
-            .map(([coin, info]) => ({
-              coin,
-              price: info.closing_price,
-              volume: info.units_traded,
-              changeRate: info.fluctate_rate_24H
-            }))
-          this.coinData.pop()
-        } catch (err) {
-          console.log(err)
+      if(!this.myStock) {
+        this.stockDataTime = setInterval(async () => {
+          try {
+            const res = await axios.get('http://localhost:3000/stock/all_coin_info')
+            this.coinData = Object.entries(res.data.data)
+              .map(([coin, info]) => ({
+                coin,
+                price: info.closing_price,
+                volume: info.units_traded,
+                changeRate: info.fluctate_rate_24H
+              }))
+            this.coinData.pop()
+          } catch (err) {
+            console.log(err)
+          }
+        }, 1000)
+      } else {
+        if(this.user.user_no==='') {
+          this.$swal('로그인이 필요합니다.', '', 'warning');
+          this.myStock = false
+          this.$router.push('/login')
+          return;
         }
-      }, 1000)
+        this.stockDataTime = setInterval(async () => {
+          try {
+            const res = await axios.post('http://localhost:3000/stock/like_stock_info',{
+              user_no: this.user.user_no
+            })
+            this.coinData = []
+            for(let i=0; i<res.data.length; i++) {
+              const data = Object.entries(res.data[i])
+                .map(([coin, info]) => ({
+                  coin,
+                  price: info.closing_price,
+                  volume: info.units_traded,
+                  changeRate: info.fluctate_rate_24H
+                }))
+              this.coinData.push(data[0])
+            }
+          } catch (err) {
+            console.log(err)
+          }
+        }, 1000)
+      }
       this.loading = false
       await this.checkLike()
     },
     // 차트
-    async getStockCandle (code,count) {
+    async getStockCandle (code,count,time) {
       this.loading = true
       this.candleCode = code
       this.candleCount = count
+      this.candleTime = time
       try {
-        const res = await axios.get(`http://localhost:3000/stock/coin_info_candle/${code}`)
+        const res = await axios.get(`http://localhost:3000/stock/coin_info_candle/${code}/${time}`)
         this.candleData = res.data.data.splice(res.data.data.length - count, res.data.data.length)
       } catch (err) {
         console.log(err)
       }
-      this.drawCandleChart()
+      this.drawChart()
     },
-    drawCandleChart () {
+    drawChart () {
       const cd = this.candleData
       var cdtemp=[];
+      var trade_amount=[];
       for (var i = 0; i < cd.length; i++) {
         cdtemp.push({
-          x: this.$formatDateTime(cd[i][0]),
+          x: this.$formatDateTime(cd[i][0],this.candleTime!=='24h'),
           y: [cd[i][1], cd[i][3], cd[i][4], cd[i][2]]
+        })
+        trade_amount.push({
+          x: this.$formatDateTime(cd[i][0],this.candleTime!=='24h'),
+          y: Math.floor(cd[i][5])
         })
       }
       this.candleChartSeries = [{
+        name: '캔들',
+        type: 'candlestick',
         data: cdtemp
+      }]
+        this.barChartSeries = [
+      {
+        name: '거래량',
+        type: 'bar',
+        data: trade_amount
       }]
       this.loading = false
     },
+    myStockToggle (myBool) {
+      if(myBool===this.myStock) {
+        return;
+      }
+      this.myStock = myBool
+      this.getStock()
+    }
   },
   unmounted () {
     clearInterval(this.stockDataTime)
@@ -295,7 +381,6 @@ export default {
 .coin-table-wrapper {
   /* 원하는 크기로 조정하세요 */
   min-height: 300px;
-  min-width: 550px;
 }
 .table-container {
   display: flex;
@@ -318,9 +403,8 @@ export default {
   color: blue;
 }
 .candle_count {
-  width: 100%;
+  width: 50%;
   height: 30px;
-  margin: 10px;
   border: 1px solid #ccc;
   border-radius: 5px;
   padding: 5px;

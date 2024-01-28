@@ -27,11 +27,22 @@ export default {
       }
       return "";
     },
-    $formatDateTime(dateTime) {
+    $formatDateTime(dateTime, hour) {
       const date = new Date(dateTime);
-      const formattedDateTime = date.toLocaleDateString("ko-KR", { year: "numeric", month: "2-digit", day: "2-digit" });
+      let yyyy = date.getFullYear().toString().substring(2,4);
+      let mm = date.getMonth() + 1;
+      let dd = date.getDate();
+      let hh = date.getHours();
+      let mi = date.getMinutes();
+      let ss = date.getSeconds();
 
-      return formattedDateTime;
+      if(hour) {
+        const formattedDateTime = dd+"."+hh+":"+mi;
+        return formattedDateTime;
+      } else {
+        const formattedDateTime = yyyy+"."+mm+"."+dd;
+        return formattedDateTime;
+      }
     },
   }
 }

@@ -25,7 +25,7 @@ export default {
   min-width: 1300px;
 }
 .default_content {
-  padding-top: 30px;
+  padding-top: 50px;
   margin: auto;
   height: 100%;
   position: relative;

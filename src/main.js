@@ -14,12 +14,12 @@ import adminLayout from './Layouts/adminLayout.vue'
 
 // 메인 페이지
 import MainPage from './views/MainPage.vue'
-import myStock from './views/myStock.vue'
 
 // 로그인 페이지
 import login from './views/login.vue'
 import find from './views/find.vue'
 import findPw from './views/findPw.vue'
+
 //회원가입
 import signup from './views/signup.vue'
 
@@ -37,11 +37,6 @@ const routes = [
         name: 'MainPage',
         component: MainPage
       },
-      {
-        path: '/mystock',
-        name: 'mystock',
-        component: myStock,
-      }
     ]
   },
   {
