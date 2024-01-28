@@ -1,6 +1,6 @@
 <template>
   <div class="table-container">
-    <v-main>
+    <v-main class="main">
       <div class="loading" v-if="loading">
         <v-progress-circular indeterminate color="primary"></v-progress-circular>
       </div>
@@ -52,14 +52,14 @@
             </v-sheet>
           </v-col>
           <v-col cols="6">
-            <v-btn variant="plain" width="50%" :color="myStock?'grey':'black'" @click="myStockToggle(false)">전체종목</v-btn>
-            <v-btn variant="plain" width="50%" :color="myStock?'black':'grey'" @click="myStockToggle(true)">찜한종목</v-btn>
-            <v-row class="ml-5">
+            <v-btn :variant="myStock? 'plain':'tonal'" width="50%" :color="myStock?'grey':'black'" @click="myStockToggle(false)">전체종목</v-btn>
+            <v-btn :variant="myStock? 'tonal':'plain'" width="50%" :color="myStock?'black':'grey'" @click="myStockToggle(true)">찜한종목</v-btn>
+            <v-row>
               <v-text-field class="mt-6" v-model="searchKeyword" placeholder="종목명을 입력하세요" clearable @input="getListStock(searchKeyword)" :readonly="myStock" ></v-text-field>
             </v-row>
             <v-sheet rounded="lg">
               <v-data-table-virtual
-                height="800"
+                height="85vh"
                 width="100%"
                 :headers ="headers"
                 :items="coinData"
@@ -386,7 +386,6 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh; /* 화면 전체 높이에 맞춤 */
 }
 .coin_table {
   text-align: center;
@@ -428,5 +427,8 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
+}
+.main {
+  padding: 0;
 }
 </style>
