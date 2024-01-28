@@ -1,6 +1,6 @@
 <template>
   <div class="id_Header" style="text-align: center">
-    <h1>아이디 찾기</h1>
+    <h1>비밀번호 찾기</h1>
   </div>
   <v-card class="mx-auto" max-width="500">
     <v-card-title class="text-h6 font-weight-regular justify-space-between">
@@ -19,7 +19,6 @@
           <span class="text-caption text-grey-darken-1">
             가입할 당시 입력한 이메일을 입력해주세요.
           </span>
-          <span v-if="emailError" class="text-error">이메일을 입력해주세요.</span>
         </v-card-text>
       </v-window-item>
 
@@ -29,7 +28,6 @@
           <span class="text-caption text-grey-darken-1">
             가입할 당시 입력한 이름을 입력해주세요.
           </span>
-          <span v-if="nameError" class="text-error">이름을 입력해주세요.</span>
         </v-card-text>
       </v-window-item>
 
@@ -59,7 +57,7 @@
       <v-btn v-if="step > 1" variant="text" @click="step--">뒤로 가기</v-btn>
       <v-spacer></v-spacer>
       <v-btn
-        if="step < 3 && !emailError && !nameError"
+        v-if="step < 3"
         color="primary"
         variant="flat"
         @click="findId()"
@@ -80,9 +78,7 @@ export default {
         email: '',
         name: '',
         id: ''
-      },
-      emailError: false, // 이메일 필드 유효성 검사 에러 여부
-      nameError: false // 이름 필드 유효성 검사 에러 여부
+      }
     }
   },
 
@@ -102,28 +98,9 @@ export default {
   },
 
   methods: {
-    validateEmail() {
-      const emailRegex = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/;
-      if (!emailRegex.test(this.user.email)) {
-        this.emailError = true;
-      } else {
-        this.emailError = false;
-      }
-    },
     findId() {
       if (this.step === 1) {
-        if (this.user.email === "" ||
-          !this.user.email.includes("@") ||
-          !this.user.email.includes(".") ||
-          this.user.email === null) {
-          this.emailError = true;
-          alert("올바른 이메일 형식이 아닙니다.");// 이메일 필드가 비어있는 경우 에러 플래그를 설정합니다.
-        } else {
-          this.validateEmail();
-          if (this.emailError) {
-            return; // 이메일 형식이 올바르지 않으면 함수를 종료합니다.
-          }
-          this.step++;}
+        this.step++;
       } else if (this.step === 2) {
         // 이름 입력 단계에서 다음 버튼을 클릭한 경우
         // 이름과 관련된 백엔드 API를 호출하여 해당 이름에 대한 아이디를 가져옵니다.

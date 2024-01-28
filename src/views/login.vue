@@ -14,7 +14,7 @@
         <div v-if="user.user_id===''" class="horizontal-buttons">
           <button @click="goToFind()" class="login_btn1">아이디 찾기</button>
           <span> | </span>
-          <button @click="goToFind()" class="login_btn1">비밀번호 찾기</button>
+          <button @click="goToFindPw()" class="login_btn1">비밀번호 찾기</button>
           <span> | </span>
           <button @click="gotoSignUp()" class="login_btn1">회원가입</button>
         </div>
@@ -48,6 +48,9 @@
         },
         goToFind() {
               this.$router.push({ path: '/login/find' });
+        },
+        goToFindPw() {
+          this.$router.push({ path: '/login/findPw' });
         },
         // 로컬 로그인
         localLogin() {
@@ -87,7 +90,7 @@
               console.log(err);
             })
         },
-  
+
         //카카오 로그인
         kakaoLogin() {
           window.Kakao.Auth.login({
@@ -103,7 +106,7 @@
                   const email = kakao_account.email; //카카오 이메일
                   const name = kakao_account.profile.nickname
                   console.log( email, name)
-  
+
                   axios({
                       url: "http://localhost:3000/auth/kakaoLoginProcess",
                       method: "POST",
@@ -224,28 +227,28 @@
               },
           });
           this.$store.commit("naverLogin", this.naverLogin);
-  
+
           this.naverLogin.init();
-  
+
           this.naverLogin.getLoginStatus((status) => {
               if (status) {
                   console.log(status);
                   console.log(this.naverLogin.user.nickname);
-  
+
                   const email = this.naverLogin.user.email;
                   const id = this.naverLogin.user.id;
                   const name = this.naverLogin.user.nickname;
-  
+
                   this.naver_id = id;
                   console.log(email)
                   console.log(name)
-  
+
               } else {
                   console.log("callback처리 실패");
               }
           });
         },
-  
+
   };
   </script>
   <style scoped>
@@ -286,7 +289,7 @@
     margin: 7% auto;
     align-items: center;
   }
-  
+
   .login-form-field {
     width: 486px;
     height: 70px;
@@ -334,9 +337,9 @@
     outline: none;
     margin-left: auto;
     margin-right: auto;
-  
+
     } */
-  
+
 
   .btn_kakao{
     width:60px;

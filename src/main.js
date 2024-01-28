@@ -19,7 +19,7 @@ import myStock from './views/myStock.vue'
 // 로그인 페이지
 import login from './views/login.vue'
 import find from './views/find.vue'
-
+import findPw from './views/findPw.vue'
 //회원가입
 import signup from './views/signup.vue'
 
@@ -58,6 +58,11 @@ const routes = [
         path: 'find',
         name: 'find',
         component: find,
+      },
+      {
+        path: 'findPw',
+        name: 'findPw',
+        component: findPw,
       },
       {
         path: 'signup',
