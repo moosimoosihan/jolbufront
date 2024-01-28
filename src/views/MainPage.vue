@@ -76,7 +76,7 @@
                 :custom-filter="filterOnlyCapsText"
               >
                 <template v-slot:top>
-                  <v-text-field v-model="searchKeyword" placeholder="종목명을 입력하세요(2자 이상)" clearable ></v-text-field>
+                  <v-text-field v-model="searchKeyword" placeholder="종목명을 입력하세요" clearable hide-details></v-text-field>
                 </template>
                 <template v-slot:item="{ item }">
                   <tr class="coin_table" :class="item.changeRate==0?'rate_black': item.changeRate>0?'rate_red':'rate_blue'">
