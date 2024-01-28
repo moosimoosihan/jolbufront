@@ -7,20 +7,17 @@
       <v-container>
         <v-row>
           <v-col cols="6">
-            <v-sheet
-              min-height="85vh"
-              rounded="lg"
-            >
-              <p>{{ candleCode }}</p>
+            <v-sheet min-height="90vh" rounded="lg">
+              <h1>{{ candleCode }}</h1>
               <p>캔들 갯수</p>
-              <select class="candle_count" v-model="candleCount" @change="getStockCandle(candleCode, candleCount, candleTime)">
+              <select class="select" v-model="candleCount" @change="getStockCandle(candleCode, candleCount, candleTime)">
                 <option value="10" selected>10</option>
                 <option value="20">20</option>
                 <option value="30">30</option>
                 <option value="40">40</option>
                 <option value="50">50</option>
               </select>
-              <select class="candle_count" v-model="candleTime" @change="getStockCandle(candleCode, candleCount, candleTime)">
+              <select class="select" v-model="candleTime" @change="getStockCandle(candleCode, candleCount, candleTime)">
                 <option value="24h" selected>일</option>
                 <option value="12h">12시간</option>
                 <option value="6h">6시간</option>
@@ -54,9 +51,17 @@
           <v-col cols="6">
             <v-btn :variant="myStock? 'plain':'tonal'" width="50%" :color="myStock?'grey':'black'" @click="myStockToggle(false)">전체종목</v-btn>
             <v-btn :variant="myStock? 'tonal':'plain'" width="50%" :color="myStock?'black':'grey'" @click="myStockToggle(true)">찜한종목</v-btn>
-            <v-row>
-              <v-text-field class="mt-6" v-model="searchKeyword" placeholder="종목명을 입력하세요" clearable @input="getListStock(searchKeyword)" :readonly="myStock" ></v-text-field>
-            </v-row>
+            <p>정렬 방식</p>
+            <select class="select" @change="sortTable()" v-model="sortValue">
+              <option value="price">가격</option>
+              <option value="coin">코인명</option>
+              <option value="volume">거래량</option>
+              <option value="changeRate">변동률</option>
+            </select>
+            <select class="select" @change="sortTable()" v-model="sortOrder">
+              <option value="desc">내림차순</option>
+              <option value="asc">오름차순</option>
+            </select>
             <v-sheet rounded="lg">
               <v-data-table-virtual
                 height="85vh"
@@ -64,19 +69,27 @@
                 :headers ="headers"
                 :items="coinData"
                 :hide-default-footer="true"
-                class="coin-table-wrapper">
+                class="coin-table-wrapper"
+                :sort-by="sortBy"
+                :search="searchKeyword"
+                :no-data-text="myStock?'찜한 종목이 없습니다.':'종목이 없습니다.'"
+                :custom-filter="filterOnlyCapsText"
+              >
+                <template v-slot:top>
+                  <v-text-field v-model="searchKeyword" placeholder="종목명을 입력하세요(2자 이상)" clearable ></v-text-field>
+                </template>
                 <template v-slot:item="{ item }">
-                  <tr class="coin_table">
+                  <tr class="coin_table" :class="item.changeRate==0?'rate_black': item.changeRate>0?'rate_red':'rate_blue'">
                     <td @click="getStockCandle(item.coin, candleCount, candleTime)">
                       {{ item.coin }}
                     </td>
-                    <td @click="getStockCandle(item.coin, candleCount, candleTime)" class="animation_table" :class="item.changeRate===0?'rate_black': item.changeRate>0?'rate_red':'rate_blue'">
+                    <td @click="getStockCandle(item.coin, candleCount, candleTime)">
                       {{ $currencyFormat(item.price) }}
                     </td>
                     <td @click="getStockCandle(item.coin, candleCount, candleTime)">
-                      {{ item.volume }}
+                      {{ Math.floor(item.volume) }}
                     </td>
-                    <td @click="getStockCandle(item.coin, candleCount, candleTime)" :class="item.changeRate===0?'rate_black': item.changeRate>0?'rate_red':'rate_blue'">
+                    <td @click="getStockCandle(item.coin, candleCount, candleTime)">
                       {{ item.changeRate }}
                     </td>
                     <td>
@@ -109,8 +122,11 @@ export default {
         { title: '가격', value: 'price', align: 'center' },
         { title: '거래량', value: 'volume', align: 'center' },
         { title: '변동률', value: 'changeRate', align: 'center' },
-        { title: '찜', value: 'like', align: 'center' },
+        { title: '찜', value: 'like', align: 'center', sortable: false },
       ],
+      sortBy: [{key: this.sortValue, order: this.sortOrder}],
+      sortValue: 'price',
+      sortOrder: 'desc',
       coinData: [],
       candleData: [],
       stockDataTime: null,
@@ -148,6 +164,9 @@ export default {
       loading: false,
 
       myStock: false,
+
+      lowPrice: '',
+      highPrice: '',
     }
   },
   created () {
@@ -163,17 +182,16 @@ export default {
     async deleteToLike(item) {
       if(this.user.user_no==='') {
         this.$swal('로그인이 필요합니다.', '', 'warning');
+        this.$router.push('/login/')
         return;
       }
       try{
         const userNo = this.user.user_no; // 사용자 번호 (실제 값으로 대체)
-        const stockName = item; // 종목명
         const response = await axios.post('http://localhost:3000/stock/delete_like', {
           user_no: userNo,
-          stock_name: stockName,
+          stock_name: item,
         })
         if (response.data.success) {
-          this.$swal('찜하기 삭제 성공', '', 'success');
           await this.checkLike()
         } else {
           console.log('찜하기 삭제 실패');
@@ -185,17 +203,16 @@ export default {
     async addToLike(item) {
       if(this.user.user_no==='') {
         this.$swal('로그인이 필요합니다.', '', 'warning');
+        this.$router.push('/login/')
         return;
       }
       try{
         const userNo = this.user.user_no; // 사용자 번호 (실제 값으로 대체)
-        const stockName = item; // 종목명
         const response = await axios.post('http://localhost:3000/stock/add_like', {
           user_no: userNo,
-          stock_name: stockName,
+          stock_name: item,
         })
         if (response.data.success) {
-          this.$swal('찜하기 성공', '', 'success');
           await this.checkLike()
         } else {
           console.log('찜하기 실패');
@@ -225,39 +242,6 @@ export default {
       } catch (error) {
         console.error('찜하기 불러오기 오류가 발생했습니다.', error);
       }
-    },
-    async getListStock(code) {
-      // 영어가 아니라면 검색하지 않음
-      if(!/^[a-zA-Z]*$/.test(code)) {
-        return;
-      }
-      if(code==='종목명을 입력하세요') {
-        return;
-      }
-      if(code==='') {
-        await this.getStock()
-        return;
-      }
-      this.loading = true
-      clearInterval(this.stockDataTime)
-      this.coinData = []
-      this.stockDataTime = setInterval(async () => {
-        try{
-          const res = await axios.post('http://localhost:3000/stock/coin_info',{
-            code: code
-          })
-          this.coinData = Object.entries(res.data)
-            .map(([coin, info]) => ({
-              coin,
-              price: info.closing_price,
-              volume: info.units_traded,
-              changeRate: info.fluctate_rate_24H
-            }))
-        } catch (err) {
-          console.log(err)
-        }
-      }, 1000)
-      this.loading = false
     },
     async getStock () {
       this.loading = true
@@ -357,6 +341,9 @@ export default {
       }
       this.myStock = myBool
       this.getStock()
+    },
+    sortTable () {
+      this.sortBy = [{key: this.sortValue, order: this.sortOrder}]
     }
   },
   unmounted () {
@@ -365,9 +352,6 @@ export default {
 }
 </script>
 <style scoped>
-.animation_table {
-  transition: all 0.5s;
-}
 .coin_table thead th {
   white-space: nowrap;
 }
@@ -401,7 +385,7 @@ export default {
 .rate_blue{
   color: blue;
 }
-.candle_count {
+.select {
   width: 50%;
   height: 30px;
   border: 1px solid #ccc;
