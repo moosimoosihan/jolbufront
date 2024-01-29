@@ -8,36 +8,13 @@
         <v-row>
           <v-col cols="6">
             <v-sheet min-height="90vh" rounded="lg">
-              <!-- <div :class="selectRate==0?'rate_black': selectRate>0?'rate_red':'rate_blue'">
+              <div :class="selectRate==0?'rate_black': selectRate>0?'rate_red':'rate_blue'">
                 <h1>{{ candleCode }}</h1>
                 <h1>{{ $currencyFormat(selectPrice) }}</h1>
                 <span>{{selectRate>0?'+':''}}{{ selectRate }}% </span>
                 <span>{{ $currencyFormat(selectAmount) }}</span>
               </div>
-              <p>캔들 갯수</p> -->
-              <v-col cols="12">
-                <v-row>
-                  <v-card variant="flat" class="mx-auto" color="white" max-width="344">
-                    <v-card-title :class="selectRate==0?'rate_black': selectRate>0?'rate_red':'rate_blue'">
-                      <h1>{{ candleCode }}</h1>
-                      <h1>{{ $currencyFormat(selectPrice) }}</h1>
-                      <span :class="selectRate>0?'positive':'negative'">
-                      {{ selectRate > 0 ? '+' : '' }}{{ selectRate }}%
-                      </span>
-                      <span>{{ $currencyFormat(selectAmount) }}</span>
-                    </v-card-title>
-                    <p>캔들 갯수</p>
-                  </v-card>
-                  <v-col>
-                    <v-card-title>
-                      <strong class="text--lighten-1" style="color:red;">최고가 : {{ $currencyFormat(selectHighPrice) }}</strong>
-                    </v-card-title>
-                    <v-card-title>
-                      <strong class="text--lighten-1" style="color:blue;">최저가 : {{ $currencyFormat(selectLowPrice) }}</strong>
-                    </v-card-title>
-                  </v-col>
-                </v-row>
-            </v-col>
+              <p>캔들 갯수</p>
               <select class="select" v-model="candleCount" @change="getStockCandle(candleCode, candleCount, candleTime)">
                 <option value="10" selected>10</option>
                 <option value="20">20</option>
@@ -165,8 +142,6 @@ export default {
       selectPrice: '',
       selectAmount: '',
       selectRate: '',
-      selectHighPrice: '',
-      selectLowPrice: '',
       candleChartSeries:[],
       barChartSeries: [],
       candleChartOptions: {
@@ -405,8 +380,6 @@ export default {
           this.selectPrice = cd[cd.length-1][2]
           this.selectAmount = cd[cd.length-1][2]-cd[cd.length-1][1]
           this.selectRate = ((cd[cd.length-1][2]-cd[cd.length-1][1])/cd[cd.length-1][1]*100).toFixed(2)
-          this.selectHighPrice = cd[cd.length-1][3]
-          this.selectLowPrice = cd[cd.length-1][4]
         }
       }
       this.candleChartSeries = [{
