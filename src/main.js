@@ -14,14 +14,11 @@ import adminLayout from './Layouts/adminLayout.vue'
 
 // 메인 페이지
 import MainPage from './views/MainPage.vue'
-import stock from './views/stock.vue'
-
-//MY종목
-import myStock from './views/myStock.vue'
 
 // 로그인 페이지
 import login from './views/login.vue'
 import find from './views/find.vue'
+import findPw from './views/findPw.vue'
 
 //회원가입
 import signup from './views/signup.vue'
@@ -40,11 +37,6 @@ const routes = [
         name: 'MainPage',
         component: MainPage
       },
-      {
-        path: '/stock/:code',
-        name: 'stock',
-        component: stock
-      }
     ]
   },
   {
@@ -56,22 +48,22 @@ const routes = [
         path: '',
         name: 'login',
         component: login,
-      }, 
+      },
       {
         path: 'find',
         name: 'find',
         component: find,
       },
       {
+        path: 'findPw',
+        name: 'findPw',
+        component: findPw,
+      },
+      {
         path: 'signup',
         name: 'signup',
         component: signup,
       },
-      {
-        path: '/mystock',
-        name: 'mystock',
-        component: myStock,
-      }
     ]
   },
   {

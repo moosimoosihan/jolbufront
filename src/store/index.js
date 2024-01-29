@@ -9,6 +9,7 @@ const store = createStore({
         user_id: '',
         user_no: '',
         kakao: '',
+        save_id:'',
       }
     }
   },
