@@ -46,15 +46,12 @@
                     <v-select v-model="user_pns" :items="['방어적인','보통','공격적인']" />
                 </v-col>
                 </v-row>
-                <v-col class="box3">
-                    <!-- <div class="checkbox"> -->
-                        <input type="checkbox" name="agree" value="agreed" checked>모두 동의합니다.</input>
-                        <!-- <p class="agree1">모두 동의합니다.</p> -->
-                    <div class="signUp" id="signup">
-                        <input type="submit" class="signUpButton" @click="onSubmitForm()" value="회원가입">
-                    </div>
-                </v-col>
+               <v-row>
+           <v-checkbox  class="agree1" color="primary" label="모두 동의합니다."></v-checkbox>
+             <v-btn variant="text" color="primary" type="button" class="agree2" @click="onSubmitForm()" value="" size="x-large">회원가입</v-btn>
+
             </v-row>
+              </v-row>
         </v-container>
     </v-form>
 </template>
@@ -163,7 +160,7 @@ export default {
                 return false;
             }
             return true;
-        },
+        }, 
        checkAllAgreements() {
         // "모두 동의합니다." 라디오 버튼을 클릭하면 각 라디오 버튼을 정확히 선택
          document.getElementById('radi2').checked = true;
@@ -232,7 +229,16 @@ export default {
     padding: 0;
     box-sizing: border-box;
 }
-
+.p{
+     align-items: center;
+    justify-content: center;
+}
+.agree1{
+  margin-left: 4px;
+}
+.agree2{
+ margin-left: 189px;
+}
 .pns{
     align-items: center;
     justify-content: center;
@@ -280,8 +286,9 @@ div {
     cursor: pointer;
 }
 .container input {
-    margin-left: 10px;
-    width:329px;
+    margin-left: -40px;
+    margin-top: 6px;
+    width:50px;
     line-height: 35px;
     font-size: 12px;
     color: rgb(137, 137, 137);
@@ -290,10 +297,6 @@ div {
     align-items: center;
 }
 /* 버튼컨테이너 */
-.box3 {
-  width: 329px;
-  height: 150px;
-}
 .alert_font{
     font-size: 10px;
     margin-left: 180px;
@@ -307,9 +310,9 @@ input:focus {
     font-size: 21px;
     font-weight:500; /* 더 굵게 설정 */
 }
-#box3 div input {
-     font-size: 16px; /* 원하는 크기로 조절 */
-    /* 라디오 버튼과 라벨 사이의 간격을 조절 */
+.ss{
+    display: inline-block;
+  margin-left: 1px;
 }
 
 .radi2 {
@@ -318,21 +321,4 @@ input:focus {
     margin-left: -290px;
 }
 
-/* .radi1{
-    margin-right: -50px;
-} */
-.singnupp{
-    margin-top: 60px;
-    margin-bottom: 30px;
-    margin-left: 165px;
-}
-
-
-/* .checkbox{
-    margin-right: 100px;
-} */
-
-.agree1{
-     margin-left: 200px;
-}
 </style>
