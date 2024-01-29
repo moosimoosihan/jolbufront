@@ -261,9 +261,13 @@
   }
 
   .logo_img{
-    margin-left: 880px;
-    margin-top: 70px;
-    margin-bottom: -50px;
+    //margin-left: 880px;
+    //margin-top: 200px;
+    //margin-bottom: -50px;
+    width: 10%;
+    margin: auto;
+    display: block;
+    padding-top: 20px;
   }
 
   .zolboologin {
@@ -286,7 +290,7 @@
     display: grid;
     width: 499px;
     height: 620px;
-    margin: 7% auto;
+    margin: 3% auto;
     align-items: center;
   }
 
