@@ -7,13 +7,13 @@
       <v-container>
         <v-row>
           <v-col cols="6">
-            <v-sheet min-height="90vh" rounded="lg">
+            <v-sheet min-height="40vh" rounded="lg">
               <v-col cols="12">
                 <v-row>
                   <v-card variant="flat" class="mx-auto" color="white" max-width="344">
                     <v-card-title :class="selectRate==0?'rate_black': selectRate>0?'rate_red':'rate_blue'">
-                      <h1>{{ candleCode }}</h1>
-                      <h1>{{ $currencyFormat(selectPrice) }}</h1>
+                      <h2>{{ candleCode }}</h2>
+                      <h3>{{ $currencyFormat(selectPrice) }}</h3>
                       <span :class="selectRate>0?'positive':'negative'">
                       {{ selectRate > 0 ? '+' : '' }}{{ selectRate }}%
                       </span>
@@ -23,10 +23,10 @@
                   </v-card>
                   <v-col>
                     <v-card-title>
-                      <strong class="text--lighten-1" style="color:red;">최고가 : {{ $currencyFormat(selectHighPrice) }}</strong>
+                      <strong class="text--lighten-1" style="color:red">최고가 : {{ $currencyFormat(selectHighPrice) }}</strong>
                     </v-card-title>
                     <v-card-title>
-                      <strong class="text--lighten-1" style="color:blue;">최저가 : {{ $currencyFormat(selectLowPrice) }}</strong>
+                      <strong class="text--lighten-1" style="color:blue">최저가 : {{ $currencyFormat(selectLowPrice) }}</strong>
                     </v-card-title>
                   </v-col>
                 </v-row>
@@ -68,16 +68,40 @@
                 :series="barChartSeries"
               />
             </v-sheet>
+            <v-col>
+              <v-card>
+                <h3>모의 투자</h3>
+                <p>현재 금액 : {{ $currencyFormat(simulatedAmount) }}</p>
+              </v-card>
+              <v-row>
+                <v-text-field hide-details readonly>{{ $currencyFormat(selectPrice) }}</v-text-field>
+                <v-text-field v-model="buy_mock_amount" placeholder="매수 수량" clearable hide-details></v-text-field>
+                <v-btn @click="mock(false)">매수</v-btn>
+              </v-row>
+              <v-row>
+                <v-text-field hide-details readonly>{{ $currencyFormat(selectPrice) }}</v-text-field>
+                <v-text-field v-model="sell_mock_amount" placeholder="매도 수량" clearable hide-details></v-text-field>
+                <v-btn @click="mock(true)">매도</v-btn>
+              </v-row>
+            </v-col>
           </v-col>
           <v-col cols="6">
-            <v-btn :variant="myStock? 'outlined':'tonal'" width="50%" :color="myStock?'grey':'black'" @click="myStockToggle(false)">전체종목</v-btn>
-            <v-btn :variant="myStock? 'tonal':'outlined'" width="50%" :color="myStock?'black':'grey'" @click="myStockToggle(true)">찜한종목</v-btn>
+            <v-btn :variant="myStock? 'outlined':saleStock?'outlined':'tonal'" width="34%" :color="myStock?'grey':'black'" @click="myStockToggle(false)">전체종목</v-btn>
+            <v-btn :variant="myStock? 'tonal':saleStock?'outlined':'outlined'" width="33%" :color="myStock?'black':'grey'" @click="myStockToggle(true)">찜한종목</v-btn>
+            <v-btn :variant="myStock?'outlined':saleStock?'tonal':'outlined'" width="33%" :color="saleStock?'black':'grey'" @click="saleStockToggle()">매도종목</v-btn>
             <p>정렬 방식</p>
-            <select class="select" @change="sortTable()" v-model="sortValue">
+            <select v-if="!saleStock" class="select" @change="sortTable()" v-model="sortValue">
               <option value="price">가격</option>
               <option value="coin">코인명</option>
               <option value="volume">거래량</option>
               <option value="changeRate">변동률</option>
+            </select>
+            <select v-else class="select" @change="sortTable()" v-model="sortValue">
+              <option value="price">가격</option>
+              <option value="coin">코인명</option>
+              <option value="amount">수량</option>
+              <option value="total_price">총 금액</option>
+              <option value="rate">변동량</option>
             </select>
             <select class="select" @change="sortTable()" v-model="sortOrder">
               <option value="desc">내림차순</option>
@@ -85,6 +109,7 @@
             </select>
             <v-sheet rounded="lg">
               <v-data-table-virtual
+                v-if="!saleStock"
                 height="100vh"
                 width="100%"
                 :headers ="headers"
@@ -122,6 +147,43 @@
                   </tr>
                 </template>
               </v-data-table-virtual>
+              <v-data-table-virtual
+                v-else
+                height="100vh"
+                width="100%"
+                :headers ="headers2"
+                :items="coinData"
+                :hide-default-footer="true"
+                class="coin-table-wrapper"
+                :sort-by="sortBy"
+                :search="searchKeyword">
+              <template v-slot:top>
+                <v-text-field v-model="searchKeyword" placeholder="종목명을 입력하세요" clearable hide-details></v-text-field>
+              </template>
+                <template v-slot:item="{ item }">
+                  <tr class="coin_table" :class="item.rate==0?'rate_black': item.rate>0?'rate_red':'rate_blue'">
+                    <td @click="getStockCandle(item.coin, candleCount, candleTime)">
+                      {{ item.coin }}
+                    </td>
+                    <td @click="getStockCandle(item.coin, candleCount, candleTime)">
+                      {{ $currencyFormat(item.price) }}
+                    </td>
+                    <td @click="getStockCandle(item.coin, candleCount, candleTime)">
+                      {{ $currencyFormat(item.closing_price) }}
+                    </td>
+                    <td @click="getStockCandle(item.coin, candleCount, candleTime)">
+                      {{ Math.floor(item.amount) }}
+                    </td>
+                    <td @click="getStockCandle(item.coin, candleCount, candleTime)">
+                      <p>{{ $currencyFormat(item.total_price) }}</p>
+                    </td>
+                    <td @click="getStockCandle(item.coin, candleCount, candleTime)">
+                      <p>{{ item.rate_price>0?'+':''}}{{ $currencyFormat(item.rate_price) }}</p>
+                      <p>{{ item.rate>0?'+':'' }}{{ item.rate }}%</p>
+                    </td>
+                  </tr>
+                </template>
+              </v-data-table-virtual>
             </v-sheet>
           </v-col>
         </v-row>
@@ -145,6 +207,14 @@ export default {
         { title: '변동률', value: 'changeRate', align: 'center' },
         { title: '찜', value: 'like', align: 'center', sortable: false },
       ],
+      headers2: [
+        { title: '코인', value: 'coin', align:'center'},
+        { title: '구매가', value: 'price', align:'center'},
+        { title: '현재가', value: 'close_price', align:'center'},
+        { title: '수량', value: 'amount', align:'center'},
+        { title: '총액', value: 'total_price', align:'center'},
+        { title: '변동률', value: 'rate', align:'center'}
+      ],
       sortBy: [{key: this.sortValue, order: this.sortOrder}],
       sortValue: 'price',
       sortOrder: 'desc',
@@ -160,6 +230,12 @@ export default {
       selectRate: '',
       selectHighPrice: '',
       selectLowPrice: '',
+
+      // 모의 투자
+      simulatedAmount: '100000000',
+      buy_mock_amount: '',
+      sell_mock_amount: '',
+
       candleChartSeries:[],
       barChartSeries: [],
       candleChartOptions: {
@@ -235,11 +311,13 @@ export default {
       loading: false,
 
       myStock: false,
+      saleStock: false,
     }
   },
   created () {
     this.getStock()
     this.getStockCandle(this.candleCode, this.candleCount, this.candleTime)
+    this.getSimulatedAmount()
   },
   computed: {
     user () {
@@ -249,12 +327,12 @@ export default {
   methods: {
     async deleteToLike(item) {
       if(this.user.user_no==='') {
-        this.$swal('로그인이 필요합니다.', '', 'warning');
+        this.$swal('로그인이 필요합니다.', '', 'warning')
         this.$router.push('/login/')
-        return;
+        return
       }
       try{
-        const userNo = this.user.user_no; // 사용자 번호 (실제 값으로 대체)
+        const userNo = this.user.user_no // 사용자 번호 (실제 값으로 대체)
         const response = await axios.post('http://localhost:3000/stock/delete_like', {
           user_no: userNo,
           stock_name: item,
@@ -262,20 +340,20 @@ export default {
         if (response.data.success) {
           await this.checkLike()
         } else {
-          console.log('찜하기 삭제 실패');
+          console.log('찜하기 삭제 실패')
         }
       } catch(error) {
-        console.error('찜하기 삭제 중에 오류가 발생했습니다.', error);
+        console.error('찜하기 삭제 중에 오류가 발생했습니다.', error)
       }
     },
     async addToLike(item) {
       if(this.user.user_no==='') {
-        this.$swal('로그인이 필요합니다.', '', 'warning');
+        this.$swal('로그인이 필요합니다.', '', 'warning')
         this.$router.push('/login/')
-        return;
+        return
       }
       try{
-        const userNo = this.user.user_no; // 사용자 번호 (실제 값으로 대체)
+        const userNo = this.user.user_no // 사용자 번호 (실제 값으로 대체)
         const response = await axios.post('http://localhost:3000/stock/add_like', {
           user_no: userNo,
           stock_name: item,
@@ -283,18 +361,18 @@ export default {
         if (response.data.success) {
           await this.checkLike()
         } else {
-          console.log('찜하기 실패');
+          console.log('찜하기 실패')
         }
       } catch(error) {
-        console.error('찜하기 중에 오류가 발생했습니다.', error);
+        console.error('찜하기 중에 오류가 발생했습니다.', error)
       }
     },
     async checkLike() {
       if(this.user.user_no==='') {
-        return false;
+        return false
       }
       try{
-        const userNo = this.user.user_no; // 사용자 번호 (실제 값으로 대체)
+        const userNo = this.user.user_no // 사용자 번호 (실제 값으로 대체)
         const response = await axios.post('http://localhost:3000/stock/check_like', {
           user_no: userNo,
         })
@@ -308,11 +386,12 @@ export default {
           this.likeList = []
         }
       } catch (error) {
-        console.error('찜하기 불러오기 오류가 발생했습니다.', error);
+        console.error('찜하기 불러오기 오류가 발생했습니다.', error)
       }
     },
     async getStock () {
       this.loading = true
+      this.saleStock = false
       clearInterval(this.stockDataTime)
       this.coinData = []
       if(!this.myStock) {
@@ -334,10 +413,10 @@ export default {
         }, 1000)
       } else {
         if(this.user.user_no==='') {
-          this.$swal('로그인이 필요합니다.', '', 'warning');
+          this.$swal('로그인이 필요합니다.', '', 'warning')
           this.myStock = false
           this.$router.push('/login')
-          return;
+          return
         }
         this.stockDataTime = setInterval(async () => {
           try {
@@ -383,9 +462,9 @@ export default {
     },
     drawChart () {
       const cd = this.candleData
-      var cdtemp=[];
-      var trade_amount=[];
-      for (var i = 0; i < cd.length; i++) {
+      var cdtemp=[]
+      var trade_amount=[]
+      for (var i=0; i<cd.length; i++) {
         cdtemp.push({
           x: this.$formatDateTime(cd[i][0],this.candleTime!=='24h'),
           y: [cd[i][1], cd[i][3], cd[i][4], cd[i][2]]
@@ -415,15 +494,107 @@ export default {
       }]
       this.loading = false
     },
+    async saleStockToggle() {
+      if (this.user.user_no === '') {
+        this.$swal('로그인이 필요합니다.', '', 'warning')
+        this.$router.push('/login')
+        return
+      }
+      if(this.saleStock) return
+
+      this.myStock = false
+      this.saleStock = true
+      this.sortValue = '코인'
+      clearInterval(this.stockDataTime)
+      this.stockDataTime = setInterval(async () => {
+        try {
+          const res = await axios.post('http://localhost:3000/stock/sale_stock_info', {
+            user_no: this.user.user_no
+          })
+          this.coinData = []
+          if(res.data.message!=='구매한 종목 없음'){
+            this.coinData = Object.entries(res.data)
+              .map(([coin,info]) => ({
+                coin : info.MOCK_NAME,
+                price: info.MOCK_PRICE,
+                amount: info.MOCK_AMOUNT,
+                total_price: info.TOTAL_PRICE,
+                rate: info.RATE.toFixed(2),
+                rate_price: info.rate_price,
+                closing_price : info.closing_price
+              }))
+          }
+        } catch (err) {
+          console.log(err)
+        }
+      }, 1000)
+    },
     myStockToggle (myBool) {
       if(myBool===this.myStock) {
-        return;
+        if(this.saleStock){
+          this.saleStock = false
+        } else {
+          return
+        }
       }
       this.myStock = myBool
       this.getStock()
     },
     sortTable () {
       this.sortBy = [{key: this.sortValue, order: this.sortOrder}]
+    },
+    async getSimulatedAmount () {
+      if(this.user.user_no === '') return
+      try {
+        const res = await axios.get(`http://localhost:3000/stock/simulatedAmount/${this.user.user_no}`)
+        this.simulatedAmount = res.data.result
+      } catch (err) {
+        console.log(err)
+      }
+    },
+    async mock(sell) {
+      if(this.user.user_no===''){
+        this.$swal('로그인이 필요합니다.', '', 'warning')
+        return this.$router.push('/login')
+      }
+      if(sell && (this.sell_mock_amount==='' || this.sell_mock_amount===0) || !sell && (this.buy_mock_amount==='' || this.buy_mock_amount===0)) {
+        this.$swal('수량을 입력해주세요.', '', 'warning')
+        return
+      }
+      if(this.loading) return
+      this.loading = true
+      try{
+        const res = await axios.post('http://localhost:3000/stock/update_simulatedAmount', {
+          user_no: this.user.user_no,
+          code: this.candleCode,
+          trade_price: this.selectPrice,
+          trade_amount: sell ? this.sell_mock_amount : this.buy_mock_amount,
+          sell: sell
+        })
+        if(res.data.message==='금액이 부족합니다.'){
+          this.$swal('금액이 부족합니다.', '', 'warning')
+        } else if (res.data.message==='매도할 종목 없음'){
+          this.$swal('매도할 종목이 없습니다.', '', 'warning')
+        } else if (res.data.message==='매수할 종목 없음'){
+          this.$swal('매수할 종목이 없습니다.', '', 'warning')
+        } else if (res.data.message==='수량 부족') {
+          this.$swal('수량이 부족합니다.', '', 'warning')
+        } else if (res.data.message==='매수 성공') {
+          this.$swal('매수 성공', '', 'success')
+          await this.getSimulatedAmount()
+          this.buy_mock_amount = ''
+        } else if (res.data.message==='매도 성공') {
+          this.$swal('매도 성공', '', 'success')
+          await this.getSimulatedAmount()
+          this.sell_mock_amount = ''
+        } else {
+          this.$swal('오류가 발생했습니다.', '', 'warning')
+        }
+        this.loading = false
+      } catch(error) {
+        console.error(error)
+        this.loading = false
+      }
     }
   },
   unmounted () {
@@ -441,11 +612,11 @@ export default {
 .coin_table tbody td {
   white-space: nowrap;
   overflow: hidden;
-  text-overflow: ellipsis;
+  text-overflow: ellipsis
 }
 .coin-table-wrapper {
   /* 원하는 크기로 조정하세요 */
-  min-height: 300px;
+  min-height: 300px
 }
 .table-container {
   display: flex;

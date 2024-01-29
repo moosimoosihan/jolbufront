@@ -2,9 +2,6 @@
   <v-app-bar class="px-3" flat density="compact">
     <v-img @click="gotoHome()" class="logo_img" v-bind="img" :aspect-ratio="aspectRatios.value" />
     <v-spacer></v-spacer>
-    <v-spacer></v-spacer>
-    <v-spacer></v-spacer>
-    <v-spacer></v-spacer>
     <v-tab v-if="user.user_id===''" height="50" class="mr-5 hvr-underline-from-left" @click="gotoLogin()">로그인 | 회원가입</v-tab>
     <v-tab v-if="user.user_id!==''" height="50" class="mr-5 hvr-underline-from-left" @click="gotoMyPage()">마이페이지</v-tab>
     <v-tab v-if="user.user_id!==''" height="50" class="mr-5 hvr-underline-from-left" @click="logout()">로그아웃</v-tab>
