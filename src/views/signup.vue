@@ -46,17 +46,12 @@
                     <v-select v-model="user_pns" :items="['방어적인','보통','공격적인']" />
                 </v-col>
                 </v-row>
-                <v-col id="box3">
-                    <div calss="checkbox">
-                        <input type="checkbox" name="agree" value="agreed" class="radi1" checked/>
-                        <label for="radi1">모두 동의합니다.
-                        </label>
-                    </div>
-                    <div class="signUp">
-                        <input type="submit" class="signUpButton" @click="onSubmitForm()" value="회원가입">
-                    </div>
-                </v-col>
+               <v-row>
+           <v-checkbox  class="agree1" color="primary" label="모두 동의합니다."></v-checkbox>
+             <v-btn variant="text" color="primary" type="button" class="agree2" @click="onSubmitForm()" value="" size="x-large">회원가입</v-btn>
+
             </v-row>
+              </v-row>
         </v-container>
     </v-form>
 </template>
@@ -165,7 +160,7 @@ export default {
                 return false;
             }
             return true;
-        },
+        }, 
        checkAllAgreements() {
         // "모두 동의합니다." 라디오 버튼을 클릭하면 각 라디오 버튼을 정확히 선택
          document.getElementById('radi2').checked = true;
@@ -234,7 +229,16 @@ export default {
     padding: 0;
     box-sizing: border-box;
 }
-
+.p{
+     align-items: center;
+    justify-content: center;
+}
+.agree1{
+  margin-left: 4px;
+}
+.agree2{
+ margin-left: 189px;
+}
 .pns{
     align-items: center;
     justify-content: center;
@@ -245,7 +249,7 @@ export default {
 }
 .logo img {
     display: flex;
-    margin-left: 50px;
+    margin-left: 118px;
     margin-top: 20px;
     width: 180px;
 }
@@ -260,7 +264,7 @@ export default {
 }
 div {
     padding-top: 10px;
-    margin-right: 50px;
+    margin-right: 230px;
     width:450px;
 
 }
@@ -282,20 +286,17 @@ div {
     cursor: pointer;
 }
 .container input {
-    margin-left: 10px;
-    width:329px;
+    margin-left: -40px;
+    margin-top: 6px;
+    width:50px;
     line-height: 35px;
     font-size: 12px;
-    padding-left: 10px;
     color: rgb(137, 137, 137);
     border: 2px solid rgb(221, 221, 221);
     border-radius: 10px;
+    align-items: center;
 }
 /* 버튼컨테이너 */
-#box3 {
-  width: 329px;
-  height: 150px;
-}
 .alert_font{
     font-size: 10px;
     margin-left: 180px;
@@ -309,26 +310,15 @@ input:focus {
     font-size: 21px;
     font-weight:500; /* 더 굵게 설정 */
 }
-#box3 div input {
-     font-size: 16px; /* 원하는 크기로 조절 */
-     margin-right: 10px;/* 라디오 버튼과 라벨 사이의 간격을 조절 */
+.ss{
+    display: inline-block;
+  margin-left: 1px;
 }
 
-#box3 div label {
-    font-size: 11px; /* 원하는 크기로 조절 */
-    margin-left:20px; /* 라디오 버튼과 라벨 사이의 간격을 조절 */
+.radi2 {
+    font-size: 17px; /* 원하는 크기로 조절 */
     cursor: pointer; /* 마우스 커서를 포인터로 변경하여 사용자에게 상호작용 가능함을 나타냄 */
+    margin-left: -290px;
 }
-.singnupp{
-    margin-top: 60px;
-    margin-bottom: 30px;
-    margin-left: 85px;
-}
-/* .radi1{
-    margin-left: -150px;
-} */
 
-.checkbox{
-    margin-right: 100px;
-}
 </style>

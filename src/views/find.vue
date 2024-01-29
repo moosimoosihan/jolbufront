@@ -13,22 +13,22 @@
         <v-card-text>
           <v-text-field
             v-model="user.email"
-            label="이메일"
+            label="Email"
             placeholder="john@google.com"
           ></v-text-field>
           <span class="text-caption text-grey-darken-1">
             가입할 당시 입력한 이메일을 입력해주세요.
-          </span>
+          </span><br>
           <span v-if="emailError" class="text-error">이메일을 입력해주세요.</span>
         </v-card-text>
       </v-window-item>
 
       <v-window-item :value="2">
         <v-card-text>
-          <v-text-field v-model="user.name" label="이름"></v-text-field>
+          <v-text-field v-model="user.name" label="Name"></v-text-field>
           <span class="text-caption text-grey-darken-1">
             가입할 당시 입력한 이름을 입력해주세요.
-          </span>
+          </span><br>
           <span v-if="nameError" class="text-error">이름을 입력해주세요.</span>
         </v-card-text>
       </v-window-item>
@@ -56,15 +56,15 @@
     <v-divider></v-divider>
 
     <v-card-actions>
-      <v-btn v-if="step > 1" variant="text" @click="step--">뒤로 가기</v-btn>
+      <v-btn v-if="step > 1" variant="text" @click="step--"> Back </v-btn>
       <v-spacer></v-spacer>
       <v-btn
         if="step < 3 && !emailError && !nameError"
         color="primary"
-        variant="flat"
+        variant="text"
         @click="findId()"
       >
-        다음
+        Next
       </v-btn>
     </v-card-actions>
   </v-card>
@@ -100,7 +100,6 @@ export default {
       }
     },
   },
-
   methods: {
     validateEmail() {
       const emailRegex = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/;
