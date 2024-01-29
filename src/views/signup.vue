@@ -46,13 +46,11 @@
                     <v-select v-model="user_pns" :items="['방어적인','보통','공격적인']" />
                 </v-col>
                 </v-row>
-                <v-col id="box3">
-                    <div calss="checkbox">
-                        <input type="checkbox" name="agree" value="agreed" class="radi1" checked/>
-                        <label for="radi1">모두 동의합니다.
-                        </label>
-                    </div>
-                    <div class="signUp">
+                <v-col class="box3">
+                    <!-- <div class="checkbox"> -->
+                        <input type="checkbox" name="agree" value="agreed" checked>모두 동의합니다.</input>
+                        <!-- <p class="agree1">모두 동의합니다.</p> -->
+                    <div class="signUp" id="signup">
                         <input type="submit" class="signUpButton" @click="onSubmitForm()" value="회원가입">
                     </div>
                 </v-col>
@@ -245,7 +243,7 @@ export default {
 }
 .logo img {
     display: flex;
-    margin-left: 50px;
+    margin-left: 118px;
     margin-top: 20px;
     width: 180px;
 }
@@ -260,7 +258,7 @@ export default {
 }
 div {
     padding-top: 10px;
-    margin-right: 50px;
+    margin-right: 230px;
     width:450px;
 
 }
@@ -286,13 +284,13 @@ div {
     width:329px;
     line-height: 35px;
     font-size: 12px;
-    padding-left: 10px;
     color: rgb(137, 137, 137);
     border: 2px solid rgb(221, 221, 221);
     border-radius: 10px;
+    align-items: center;
 }
 /* 버튼컨테이너 */
-#box3 {
+.box3 {
   width: 329px;
   height: 150px;
 }
@@ -311,24 +309,30 @@ input:focus {
 }
 #box3 div input {
      font-size: 16px; /* 원하는 크기로 조절 */
-     margin-right: 10px;/* 라디오 버튼과 라벨 사이의 간격을 조절 */
+    /* 라디오 버튼과 라벨 사이의 간격을 조절 */
 }
 
-#box3 div label {
-    font-size: 11px; /* 원하는 크기로 조절 */
-    margin-left:20px; /* 라디오 버튼과 라벨 사이의 간격을 조절 */
+.radi2 {
+    font-size: 17px; /* 원하는 크기로 조절 */
     cursor: pointer; /* 마우스 커서를 포인터로 변경하여 사용자에게 상호작용 가능함을 나타냄 */
+    margin-left: -290px;
 }
+
+/* .radi1{
+    margin-right: -50px;
+} */
 .singnupp{
     margin-top: 60px;
     margin-bottom: 30px;
-    margin-left: 85px;
+    margin-left: 165px;
 }
-/* .radi1{
-    margin-left: -150px;
+
+
+/* .checkbox{
+    margin-right: 100px;
 } */
 
-.checkbox{
-    margin-right: 100px;
+.agree1{
+     margin-left: 200px;
 }
 </style>
