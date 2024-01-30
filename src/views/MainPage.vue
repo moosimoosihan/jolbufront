@@ -23,10 +23,10 @@
                   </v-card>
                   <v-col>
                     <v-card-title>
-                      <strong class="text--lighten-1" style="color:red">최고가 : {{ $currencyFormat(selectHighPrice) }}</strong>
+                      <strong class="float-lg-right" style="color:red">최고가 : {{ $currencyFormat(selectHighPrice) }}</strong>
                     </v-card-title>
                     <v-card-title>
-                      <strong class="text--lighten-1" style="color:blue">최저가 : {{ $currencyFormat(selectLowPrice) }}</strong>
+                      <strong class="float-lg-right" style="color:blue">최저가 : {{ $currencyFormat(selectLowPrice) }}</strong>
                     </v-card-title>
                   </v-col>
                 </v-row>
@@ -69,26 +69,26 @@
               />
             </v-sheet>
             <v-col>
-              <v-card>
-                <h3>모의 투자</h3>
+              <v-col>
+                <p>모의 투자</p>
                 <p>현재 금액 : {{ $currencyFormat(simulatedAmount) }}</p>
-              </v-card>
+              </v-col>
               <v-row>
-                <v-text-field hide-details readonly>{{ $currencyFormat(selectPrice) }}</v-text-field>
-                <v-text-field v-model="buy_mock_amount" placeholder="매수 수량" clearable hide-details></v-text-field>
-                <v-btn @click="mock(false)">매수</v-btn>
+                <v-text-field width="50%" hide-details readonly>{{ $currencyFormat(selectPrice * (buy_mock_amount!==''?buy_mock_amount:1)) }}</v-text-field>
+                <v-text-field width="50%" v-model="buy_mock_amount" type="number" placeholder="매수 수량" hide-details></v-text-field>
+                <v-btn class="mt-2" @click="mock(false)">매수</v-btn>
               </v-row>
               <v-row>
-                <v-text-field hide-details readonly>{{ $currencyFormat(selectPrice) }}</v-text-field>
-                <v-text-field v-model="sell_mock_amount" placeholder="매도 수량" clearable hide-details></v-text-field>
-                <v-btn @click="mock(true)">매도</v-btn>
+                <v-text-field width="50%" hide-details readonly>{{ $currencyFormat(selectPrice * (sell_mock_amount!==''?sell_mock_amount:1)) }}</v-text-field>
+                <v-text-field width="50%" v-model="sell_mock_amount" type="number" placeholder="매도 수량" hide-details></v-text-field>
+                <v-btn class="mt-2" @click="mock(true)">매도</v-btn>
               </v-row>
             </v-col>
           </v-col>
           <v-col cols="6">
             <v-btn :variant="myStock? 'outlined':saleStock?'outlined':'tonal'" width="34%" :color="myStock?'grey':'black'" @click="myStockToggle(false)">전체종목</v-btn>
             <v-btn :variant="myStock? 'tonal':saleStock?'outlined':'outlined'" width="33%" :color="myStock?'black':'grey'" @click="myStockToggle(true)">찜한종목</v-btn>
-            <v-btn :variant="myStock?'outlined':saleStock?'tonal':'outlined'" width="33%" :color="saleStock?'black':'grey'" @click="saleStockToggle()">매도종목</v-btn>
+            <v-btn :variant="myStock?'outlined':saleStock?'tonal':'outlined'" width="33%" :color="saleStock?'black':'grey'" @click="saleStockToggle()">모의투자</v-btn>
             <p>정렬 방식</p>
             <select v-if="!saleStock" class="select" @change="sortTable()" v-model="sortValue">
               <option value="price">가격</option>
@@ -110,7 +110,7 @@
             <v-sheet rounded="lg">
               <v-data-table-virtual
                 v-if="!saleStock"
-                height="100vh"
+                height="80vh"
                 width="100%"
                 :headers ="headers"
                 :items="coinData"
@@ -149,14 +149,16 @@
               </v-data-table-virtual>
               <v-data-table-virtual
                 v-else
-                height="100vh"
+                height="80vh"
                 width="100%"
                 :headers ="headers2"
                 :items="coinData"
                 :hide-default-footer="true"
                 class="coin-table-wrapper"
                 :sort-by="sortBy"
-                :search="searchKeyword">
+                :search="searchKeyword"
+                no-data-text="매수 및 매도할 종목이 없습니다."
+              >
               <template v-slot:top>
                 <v-text-field v-model="searchKeyword" placeholder="종목명을 입력하세요" clearable hide-details></v-text-field>
               </template>
@@ -185,6 +187,17 @@
                 </template>
               </v-data-table-virtual>
             </v-sheet>
+            <v-col>
+              <v-card>
+                <v-card-title>
+                  <strong>AI 추천 종목</strong>
+                </v-card-title>
+                <v-card-text>
+                  <v-btn @click="getAiStock()">AI 종목 추천</v-btn>
+                  <v-text-field v-model="stock_aicontent" readonly hide-details placeholder="AI 종목 추천"></v-text-field>
+                </v-card-text>
+              </v-card>
+            </v-col>
           </v-col>
         </v-row>
       </v-container>
@@ -222,9 +235,8 @@ export default {
       candleData: [],
       stockDataTime: null,
       stockDataTimeCandle: null,
-      candleCount: 10,
-      candleTime: '24h',
-      candleCode: 'BTC',
+
+      // 현재 선택된 종목
       selectPrice: '',
       selectAmount: '',
       selectRate: '',
@@ -236,8 +248,24 @@ export default {
       buy_mock_amount: '',
       sell_mock_amount: '',
 
-      candleChartSeries:[],
-      barChartSeries: [],
+      // 차트
+      cd: [],
+      cdtemp:[],
+      chart_trade_amount:[],
+      candleCount: 10,
+      candleTime: '24h',
+      candleCode: '',
+      curCandleCode: '',
+      candleChartSeries:[{
+        name: '캔들',
+        type: 'candlestick',
+        data: []
+      }],
+      barChartSeries: [{
+        name: '거래량',
+        type: 'bar',
+        data: []
+      }],
       candleChartOptions: {
         chart: {
           id: 'candleChart',
@@ -316,7 +344,7 @@ export default {
   },
   created () {
     this.getStock()
-    this.getStockCandle(this.candleCode, this.candleCount, this.candleTime)
+    this.getStockCandle('BTC', this.candleCount, this.candleTime)
     this.getSimulatedAmount()
   },
   computed: {
@@ -445,7 +473,12 @@ export default {
     },
     // 차트
     async getStockCandle (code,count,time) {
+      if(this.candleCode===code) return
+
       this.loading = true
+      setTimeout(() => {
+        this.loading = false
+      }, 2000)
       this.candleCode = code
       this.candleCount = count
       this.candleTime = time
@@ -458,41 +491,48 @@ export default {
           console.log(err)
         }
         this.drawChart()
-      }, 1000)
+      }, 1500)
     },
     drawChart () {
-      const cd = this.candleData
-      var cdtemp=[]
-      var trade_amount=[]
-      for (var i=0; i<cd.length; i++) {
-        cdtemp.push({
-          x: this.$formatDateTime(cd[i][0],this.candleTime!=='24h'),
-          y: [cd[i][1], cd[i][3], cd[i][4], cd[i][2]]
-        })
-        trade_amount.push({
-          x: this.$formatDateTime(cd[i][0],this.candleTime!=='24h'),
-          y: Math.floor(cd[i][5])
-        })
-        if(cd[cd.length-1]){
-          this.selectPrice = cd[cd.length-1][2]
-          this.selectAmount = cd[cd.length-1][2]-cd[cd.length-1][1]
-          this.selectRate = ((cd[cd.length-1][2]-cd[cd.length-1][1])/cd[cd.length-1][1]*100).toFixed(2)
-          this.selectHighPrice = cd[cd.length-1][3]
-          this.selectLowPrice = cd[cd.length-1][4]
+      if(this.curCandleCode!==this.candleCode){
+        this.curCandleCode = this.candleCode
+        this.cd = this.candleData
+        this.cdtemp = []
+        this.chart_trade_amount = []
+        for (var i=0; i<this.cd.length; i++) {
+          this.cdtemp.push({
+            x: this.$formatDateTime(this.cd[i][0],this.candleTime!=='24h'),
+            y: [this.cd[i][1], this.cd[i][3], this.cd[i][4], this.cd[i][2]]
+          })
+          this.chart_trade_amount.push({
+            x: this.$formatDateTime(this.cd[i][0],this.candleTime!=='24h'),
+            y: Math.floor(this.cd[i][5])
+          })
+          if(this.cd[this.cd.length-1]){
+            this.selectPrice = this.cd[this.cd.length-1][2]
+            this.selectAmount = this.cd[this.cd.length-1][2]-this.cd[this.cd.length-1][1]
+            this.selectRate = ((this.cd[this.cd.length-1][2]-this.cd[this.cd.length-1][1])/this.cd[this.cd.length-1][1]*100).toFixed(2)
+            this.selectHighPrice = this.cd[this.cd.length-1][3]
+            this.selectLowPrice = this.cd[this.cd.length-1][4]
+          }
         }
+      } else {
+        // 같은 데이터의 경우 마지막 데이터만 업데이트 해준다.
+        this.cd[this.cd.length-1][1] = this.candleData[this.candleData.length-1][1]
+        this.cd[this.cd.length-1][2] = this.candleData[this.candleData.length-1][2]
+        this.cd[this.cd.length-1][3] = this.candleData[this.candleData.length-1][3]
+        this.cd[this.cd.length-1][4] = this.candleData[this.candleData.length-1][4]
+        this.cd[this.cd.length-1][5] = this.candleData[this.candleData.length-1][5]
+        this.cdtemp[this.cdtemp.length-1].y = [this.cd[this.cd.length-1][1], this.cd[this.cd.length-1][3], this.cd[this.cd.length-1][4], this.cd[this.cd.length-1][2]]
+        this.chart_trade_amount[this.chart_trade_amount.length-1].y = Math.floor(this.cd[this.cd.length-1][5])
+        this.selectPrice = this.cd[this.cd.length-1][2]
+        this.selectAmount = this.cd[this.cd.length-1][2]-this.cd[this.cd.length-1][1]
+        this.selectRate = ((this.cd[this.cd.length-1][2]-this.cd[this.cd.length-1][1])/this.cd[this.cd.length-1][1]*100).toFixed(2)
+        this.selectHighPrice = this.cd[this.cd.length-1][3]
+        this.selectLowPrice = this.cd[this.cd.length-1][4]
       }
-      this.candleChartSeries = [{
-        name: '캔들',
-        type: 'candlestick',
-        data: cdtemp
-      }]
-        this.barChartSeries = [
-      {
-        name: '거래량',
-        type: 'bar',
-        data: trade_amount
-      }]
-      this.loading = false
+      this.candleChartSeries[0].data = this.cdtemp
+      this.barChartSeries[0].data = this.chart_trade_amount
     },
     async saleStockToggle() {
       if (this.user.user_no === '') {
@@ -502,16 +542,16 @@ export default {
       }
       if(this.saleStock) return
 
+      this.coinData = []
       this.myStock = false
       this.saleStock = true
-      this.sortValue = '코인'
+      this.sortValue = 'price'
       clearInterval(this.stockDataTime)
       this.stockDataTime = setInterval(async () => {
         try {
           const res = await axios.post('http://localhost:3000/stock/sale_stock_info', {
             user_no: this.user.user_no
           })
-          this.coinData = []
           if(res.data.message!=='구매한 종목 없음'){
             this.coinData = Object.entries(res.data)
               .map(([coin,info]) => ({
@@ -530,12 +570,12 @@ export default {
       }, 1000)
     },
     myStockToggle (myBool) {
+      if(this.saleStock) {
+        this.saleStock = false
+        this.sortValue = 'price'
+      }
       if(myBool===this.myStock) {
-        if(this.saleStock){
-          this.saleStock = false
-        } else {
           return
-        }
       }
       this.myStock = myBool
       this.getStock()
@@ -594,6 +634,27 @@ export default {
       } catch(error) {
         console.error(error)
         this.loading = false
+      }
+    },
+    async getAiStock() {
+      try {
+        const res = await axios.post('http://localhost:3000/openai/aichat',{
+          user_no: this.user.user_no
+        })
+        if(res.data.message==='이미 1분 이내에 실행한 적이 있습니다.'){
+          this.$swal('이미 1분 이내에 실행한 적이 있습니다.', '', 'warning')
+          return
+        } else if (res.data.message==='DB 오류가 발생했습니다.') {
+          this.$swal('DB 오류가 발생했습니다.', '', 'warning')
+          return
+        } else if (res.data.message==='관심 종목이 5개 미만입니다.') {
+          this.$swal('관심 종목이 5개 미만입니다.', '', 'warning')
+          return
+        }
+        this.stock_name = res.data.stock_name
+        this.stock_aicontent = res.data.message
+      } catch (error) {
+        console.error(error)
       }
     }
   },
