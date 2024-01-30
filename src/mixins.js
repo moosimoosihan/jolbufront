@@ -20,10 +20,6 @@ export default {
     },
     $currencyFormat(value){
       if (value !== undefined) {
-        // 만약 100원 이하면 소수점 이하 표시
-        if (value < 100) {
-          return value + " 원";
-        }
         // 소수점 제거
         value = Math.floor(value);
         const formattedPrice = value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");

@@ -76,19 +76,25 @@
               <v-row>
                 <v-text-field width="50%" hide-details readonly>{{ $currencyFormat(selectPrice * (buy_mock_amount!==''?buy_mock_amount:1)) }}</v-text-field>
                 <v-text-field width="50%" v-model="buy_mock_amount" type="number" placeholder="매수 수량" hide-details></v-text-field>
-                <v-btn class="mt-2" @click="mock(false)">매수</v-btn>
+                <v-col class="no-padding">
+                  <v-btn class="rate_red" @click="mock(false)">매수</v-btn>
+                  <v-btn class="mb-3" @click="full_mock()">최대</v-btn>
+                </v-col>
               </v-row>
               <v-row>
                 <v-text-field width="50%" hide-details readonly>{{ $currencyFormat(selectPrice * (sell_mock_amount!==''?sell_mock_amount:1)) }}</v-text-field>
                 <v-text-field width="50%" v-model="sell_mock_amount" type="number" placeholder="매도 수량" hide-details></v-text-field>
-                <v-btn class="mt-2" @click="mock(true)">매도</v-btn>
+                <v-col class="no-padding">
+                  <v-btn class="rate_blue" @click="mock(true)">매도</v-btn>
+                  <v-btn class="mb-3" @click="getSaleStock()">최대</v-btn>
+                </v-col>
               </v-row>
             </v-col>
           </v-col>
           <v-col cols="6">
-            <v-btn :variant="myStock? 'outlined':saleStock?'outlined':'tonal'" width="34%" :color="myStock?'grey':'black'" @click="myStockToggle(false)">전체종목</v-btn>
-            <v-btn :variant="myStock? 'tonal':saleStock?'outlined':'outlined'" width="33%" :color="myStock?'black':'grey'" @click="myStockToggle(true)">찜한종목</v-btn>
-            <v-btn :variant="myStock?'outlined':saleStock?'tonal':'outlined'" width="33%" :color="saleStock?'black':'grey'" @click="saleStockToggle()">모의투자</v-btn>
+            <v-btn :variant="myStock? 'outlined':saleStock?'outlined':'tonal'" width="34%" :color="myStock?'grey':saleStock?'grey':'black'" @click="myStockToggle(false)">전체종목</v-btn>
+            <v-btn :variant="myStock? 'tonal':saleStock?'outlined':'outlined'" width="33%" :color="myStock?'black':saleStock?'grey':'grey'" @click="myStockToggle(true)">찜한종목</v-btn>
+            <v-btn :variant="myStock?'outlined':saleStock?'tonal':'outlined'" width="33%" :color="myStock?'grey':saleStock?'black':'grey'" @click="saleStockToggle()">모의투자</v-btn>
             <p>정렬 방식</p>
             <select v-if="!saleStock" class="select" @change="sortTable()" v-model="sortValue">
               <option value="price">가격</option>
@@ -159,9 +165,9 @@
                 :search="searchKeyword"
                 no-data-text="매수 및 매도할 종목이 없습니다."
               >
-              <template v-slot:top>
-                <v-text-field v-model="searchKeyword" placeholder="종목명을 입력하세요" clearable hide-details></v-text-field>
-              </template>
+                <template v-slot:top>
+                  <v-text-field v-model="searchKeyword" placeholder="종목명을 입력하세요" clearable hide-details></v-text-field>
+                </template>
                 <template v-slot:item="{ item }">
                   <tr class="coin_table" :class="item.rate==0?'rate_black': item.rate>0?'rate_red':'rate_blue'">
                     <td @click="getStockCandle(item.coin, candleCount, candleTime)">
@@ -184,6 +190,22 @@
                       <p>{{ item.rate>0?'+':'' }}{{ item.rate }}%</p>
                     </td>
                   </tr>
+                </template>
+                <template v-slot:bottom>
+                  <v-row :class="(parseInt(coinData.reduce((acc, cur) => acc + cur.rate_price, 0)))>0?'rate_red':(parseInt(coinData.reduce((acc, cur) => acc + cur.rate_price, 0)))<0?'rate_blue':'rate_black'">
+                    <v-col>
+                      <p>수익금 : {{ coinData.reduce((acc, cur) => acc + cur.rate_price, 0)>0?'+':'' }}{{ $currencyFormat(coinData.reduce((acc, cur) => acc + cur.rate_price, 0)) }}</p>
+                    </v-col>
+                    <v-col>
+                      <p>수익률 : {{(parseInt(coinData.reduce((acc, cur) => acc + cur.rate, 0))).toFixed(2) }}%</p>
+                    </v-col>
+                    <v-col>
+                      <p>구매 금액 : {{ $currencyFormat(coinData.reduce((acc, cur) => acc + cur.total_price, 0)) }}</p>
+                    </v-col>
+                    <v-col>
+                      <p>현재 금액 : {{ $currencyFormat(coinData.reduce((acc, cur) => acc + cur.closing_price * cur.amount, 0)) }}</p>
+                    </v-col>
+                  </v-row>
                 </template>
               </v-data-table-virtual>
             </v-sheet>
@@ -492,6 +514,8 @@ export default {
         }
         this.drawChart()
       }, 1500)
+      // 만약 구매한 종목이라면 구매한 종목 갯수를 가져온다.
+      await this.getSaleStock(code)
     },
     drawChart () {
       if(this.curCandleCode!==this.candleCode){
@@ -534,6 +558,20 @@ export default {
       this.candleChartSeries[0].data = this.cdtemp
       this.barChartSeries[0].data = this.chart_trade_amount
     },
+    async getSaleStock(code) {
+      if(this.user.user_no==='') return
+      try {
+        const response = await axios.post('http://localhost:3000/stock/sale_stock_amount', {
+          user_no: this.user.user_no,
+          stock_name : code
+        })
+        if(response.data.message==='구매한 종목 없음') return
+
+        this.sell_mock_amount = response.data.amount
+      } catch (err) {
+        console.log(err)
+      }
+    },
     async saleStockToggle() {
       if (this.user.user_no === '') {
         this.$swal('로그인이 필요합니다.', '', 'warning')
@@ -570,15 +608,43 @@ export default {
       }, 1000)
     },
     myStockToggle (myBool) {
-      if(this.saleStock) {
-        this.saleStock = false
-        this.sortValue = 'price'
+      if(this.saleStock){
+        // 모의투자가 켜져있을 경우
+        if(myBool){
+          // 나의 종목으로 갈 경우
+          if (this.user.user_no === '') {
+            this.$swal('로그인이 필요합니다.', '', 'warning')
+            this.$router.push('/login')
+            return
+          }
+          this.saleStock = false
+          this.sortValue = 'price'
+          this.myStock = myBool
+          this.getStock()
+        } else {
+          // 전체 종목으로 갈 경우
+          this.saleStock = false
+          this.sortValue = 'price'
+          this.myStock = myBool
+          this.getStock()
+        }
+      } else {
+        // 모의투자가 꺼져있을 경우
+        if(myBool){
+          // 나의 종목으로 갈 경우
+          if (this.user.user_no === '') {
+            this.$swal('로그인이 필요합니다.', '', 'warning')
+            this.$router.push('/login')
+            return
+          }
+          this.myStock = myBool
+          this.getStock()
+        } else {
+          // 전체 종목으로 갈 경우
+          this.myStock = myBool
+          this.getStock()
+        }
       }
-      if(myBool===this.myStock) {
-          return
-      }
-      this.myStock = myBool
-      this.getStock()
     },
     sortTable () {
       this.sortBy = [{key: this.sortValue, order: this.sortOrder}]
@@ -637,6 +703,10 @@ export default {
       }
     },
     async getAiStock() {
+      if(this.user.user_no===''){
+        this.$swal('로그인이 필요합니다.', '', 'warning')
+        return this.$router.push('/login')
+      }
       try {
         const res = await axios.post('http://localhost:3000/openai/aichat',{
           user_no: this.user.user_no
@@ -656,6 +726,13 @@ export default {
       } catch (error) {
         console.error(error)
       }
+    },
+    full_mock() {
+      if(this.user.user_no===''){
+        this.$swal('로그인이 필요합니다.', '', 'warning')
+        return this.$router.push('/login')
+      }
+      this.buy_mock_amount = Math.floor(this.simulatedAmount/this.selectPrice)
     }
   },
   unmounted () {
@@ -726,6 +803,9 @@ export default {
   align-items: center;
 }
 .main {
+  padding: 0;
+}
+.no-padding {
   padding: 0;
 }
 </style>
