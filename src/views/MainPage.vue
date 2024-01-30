@@ -271,9 +271,6 @@ export default {
       sell_mock_amount: '',
 
       // 차트
-      cd: [],
-      cdtemp:[],
-      chart_trade_amount:[],
       candleCount: 10,
       candleTime: '24h',
       candleCode: '',
@@ -495,8 +492,6 @@ export default {
     },
     // 차트
     async getStockCandle (code,count,time) {
-      if(this.candleCode===code) return
-
       this.loading = true
       setTimeout(() => {
         this.loading = false
@@ -518,45 +513,29 @@ export default {
       await this.getSaleStock(code)
     },
     drawChart () {
-      if(this.curCandleCode!==this.candleCode){
-        this.curCandleCode = this.candleCode
-        this.cd = this.candleData
-        this.cdtemp = []
-        this.chart_trade_amount = []
-        for (var i=0; i<this.cd.length; i++) {
-          this.cdtemp.push({
-            x: this.$formatDateTime(this.cd[i][0],this.candleTime!=='24h'),
-            y: [this.cd[i][1], this.cd[i][3], this.cd[i][4], this.cd[i][2]]
-          })
-          this.chart_trade_amount.push({
-            x: this.$formatDateTime(this.cd[i][0],this.candleTime!=='24h'),
-            y: Math.floor(this.cd[i][5])
-          })
-          if(this.cd[this.cd.length-1]){
-            this.selectPrice = this.cd[this.cd.length-1][2]
-            this.selectAmount = this.cd[this.cd.length-1][2]-this.cd[this.cd.length-1][1]
-            this.selectRate = ((this.cd[this.cd.length-1][2]-this.cd[this.cd.length-1][1])/this.cd[this.cd.length-1][1]*100).toFixed(2)
-            this.selectHighPrice = this.cd[this.cd.length-1][3]
-            this.selectLowPrice = this.cd[this.cd.length-1][4]
-          }
+      this.curCandleCode = this.candleCode
+      let cd = this.candleData
+      let cdtemp = []
+      let chart_trade_amount = []
+      for (var i=0; i<cd.length; i++) {
+        cdtemp.push({
+          x: this.$formatDateTime(cd[i][0], this.candleTime !== '24h'),
+          y: [cd[i][1], cd[i][3], cd[i][4], cd[i][2]]
+        })
+        chart_trade_amount.push({
+          x: this.$formatDateTime(cd[i][0], this.candleTime !== '24h'),
+          y: Math.floor(cd[i][5])
+        })
+        if (cd[cd.length - 1]) {
+          this.selectPrice = cd[cd.length - 1][2]
+          this.selectAmount = cd[cd.length - 1][2] - cd[cd.length - 1][1]
+          this.selectRate = ((cd[cd.length - 1][2] - cd[cd.length - 1][1]) / cd[cd.length - 1][1] * 100).toFixed(2)
+          this.selectHighPrice = cd[cd.length - 1][3]
+          this.selectLowPrice = cd[cd.length - 1][4]
         }
-      } else {
-        // 같은 데이터의 경우 마지막 데이터만 업데이트 해준다.
-        this.cd[this.cd.length-1][1] = this.candleData[this.candleData.length-1][1]
-        this.cd[this.cd.length-1][2] = this.candleData[this.candleData.length-1][2]
-        this.cd[this.cd.length-1][3] = this.candleData[this.candleData.length-1][3]
-        this.cd[this.cd.length-1][4] = this.candleData[this.candleData.length-1][4]
-        this.cd[this.cd.length-1][5] = this.candleData[this.candleData.length-1][5]
-        this.cdtemp[this.cdtemp.length-1].y = [this.cd[this.cd.length-1][1], this.cd[this.cd.length-1][3], this.cd[this.cd.length-1][4], this.cd[this.cd.length-1][2]]
-        this.chart_trade_amount[this.chart_trade_amount.length-1].y = Math.floor(this.cd[this.cd.length-1][5])
-        this.selectPrice = this.cd[this.cd.length-1][2]
-        this.selectAmount = this.cd[this.cd.length-1][2]-this.cd[this.cd.length-1][1]
-        this.selectRate = ((this.cd[this.cd.length-1][2]-this.cd[this.cd.length-1][1])/this.cd[this.cd.length-1][1]*100).toFixed(2)
-        this.selectHighPrice = this.cd[this.cd.length-1][3]
-        this.selectLowPrice = this.cd[this.cd.length-1][4]
       }
-      this.candleChartSeries[0].data = this.cdtemp
-      this.barChartSeries[0].data = this.chart_trade_amount
+      this.candleChartSeries[0].data = cdtemp
+      this.barChartSeries[0].data = chart_trade_amount
     },
     async getSaleStock(code) {
       if(this.user.user_no==='') return
