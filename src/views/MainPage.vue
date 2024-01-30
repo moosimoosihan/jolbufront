@@ -637,6 +637,10 @@ export default {
       }
     },
     async getAiStock() {
+      if(this.user.user_no===''){
+        this.$swal('로그인이 필요합니다.', '', 'warning')
+        return this.$router.push('/login')
+      }
       try {
         const res = await axios.post('http://localhost:3000/openai/aichat',{
           user_no: this.user.user_no
