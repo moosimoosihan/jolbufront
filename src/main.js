@@ -11,9 +11,13 @@ import VueApexCharts from 'vue3-apexcharts'
 import defaultLayout from './Layouts/defaultLayout.vue'
 import emptyLayout from './Layouts/emptyLayout.vue'
 import adminLayout from './Layouts/adminLayout.vue'
+import mypageLayout from './Layouts/mypageLayout.vue'
 
 // 메인 페이지
 import MainPage from './views/MainPage.vue'
+
+// 마이 페이지
+import mypageMain from './mypage/mypageMain.vue'
 
 // 로그인 페이지
 import login from './views/login.vue'
@@ -63,6 +67,19 @@ const routes = [
         path: 'signup',
         name: 'signup',
         component: signup,
+      },
+
+    ]
+  },
+   {
+    path: '/mypage/',
+    name: 'mypage',
+    component: mypageLayout,
+    children: [
+      {
+        path: '',
+        name: 'mypageMain',
+        component: mypageMain,
       },
     ]
   },
