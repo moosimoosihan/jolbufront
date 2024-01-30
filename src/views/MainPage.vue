@@ -203,7 +203,7 @@
                       <p>구매 금액 : {{ $currencyFormat(coinData.reduce((acc, cur) => acc + cur.total_price, 0)) }}</p>
                     </v-col>
                     <v-col>
-                      <p>현재 금액 : {{ $currencyFormat(coinData.reduce((acc, cur) => acc + cur.closing_price * cur.amount, 0)) }}</p>
+                      <p>현재 금액 : {{ $currencyFormat(coinData.reduce((acc, cur) => acc + cur.closing_price * cur.amount, 0).toFixed(0)) }}</p>
                     </v-col>
                   </v-row>
                 </template>
