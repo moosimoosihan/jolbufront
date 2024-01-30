@@ -20,9 +20,13 @@ export default {
     },
     $currencyFormat(value){
       if (value !== undefined) {
-        // 소수점 제거
-        value = Math.floor(value);
-        const formattedPrice = value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        // 소수점이 너무 길다면 소수점 2자리까지만 표시 100원 이상 -100원 이하라면 그대로 콤마 표시
+        if(value < 100 && value > -100) {
+          const formattedPrice = Number(value).toFixed(2);
+          return `${formattedPrice} 원`;
+        }
+        // 100원 이상 -100원 이하라면 콤마 표시
+        const formattedPrice = Number(value).toLocaleString('ko-KR');
         return `${formattedPrice} 원`;
       }
       return "";
