@@ -17,6 +17,10 @@
               <v-icon start>mdi-heart</v-icon>
               <p>내 종목</p>
             </v-tab>
+            <v-tab to="/mypage/myStock" class="m">
+              <v-icon start>mdi-heart</v-icon>
+              <p>AI 답변</p>
+            </v-tab>
           </v-tabs>
         </v-col>
       </v-list>

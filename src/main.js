@@ -18,8 +18,9 @@ import MainPage from './views/MainPage.vue'
 
 // 마이 페이지
 import mypageMain from './mypage/mypageMain.vue'
-import mypageSd from './mypage/mypageSd.vue'
+import mypagemk from './mypage/mypagemk.vue'
 import myStock from './mypage/myStock.vue'
+import mypageAI from './mypage/mypageAI.vue'
 
 // 로그인 페이지
 import login from './views/login.vue'
@@ -84,16 +85,21 @@ const routes = [
         component: mypageMain,
       },
       {
-        path: 'ai',
-        name: 'mypageSd',
-        component: mypageSd,
+        path: 'mypagemk',
+        name: 'mypagemk',
+        component: mypagemk,
 
       },
       {
         path:'myStock',
         name:'myStock',
         component:myStock,
-      }
+      },
+      {
+        path:'ai',
+        name:'mypageAI',
+        component:mypageAI,
+      },
     ]
   },
   {
