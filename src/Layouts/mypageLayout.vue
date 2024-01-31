@@ -1,27 +1,34 @@
 <template>
-    <div class="root_container">
-      <Header />
-      <v-navigation-drawer>
-        <v-drawer>
+  <v-container>
+    <Header />
+    <v-navigation-drawer>
+      <v-drawer>
         <v-list>
-            <div class="m_container">
-                <router-link class="m" to="/mypage/">
-                    <p>내 정보</p>
-                </router-link>
-                <router-link class="m" to="mypage/mypageAI">
-                    <p>AI 히스토리</p>
-                </router-link>
-            </div>
+          <v-col>
+            <v-tabs direction="vertical" class="custom-tabs">
+              <v-tab to="/mypage" class="m">
+                <v-icon start>mdi-account</v-icon>
+                <p>내 정보</p>
+              </v-tab>
+              <v-tab to="/mypage/ai" class="m">
+                <v-icon start>mdi-history</v-icon>
+                <p>AI 히스토리</p>
+              </v-tab>
+              <v-tab to="/mypage/myStock" class="m">
+                <v-icon start>mdi-heart</v-icon>
+                <p>내 종목</p>
+              </v-tab>
+            </v-tabs>
+          </v-col>
         </v-list>
-    </v-drawer>
+      </v-drawer>
     </v-navigation-drawer>
-      <div class="default_content">
-        <router-view />
-      </div>
-      <Footer />
-
+    <div class="default_content">
+      <router-view />
     </div>
-  </template>
+    <Footer />
+  </v-container>
+</template>
   
   <script>
   import Header from './header.vue'
@@ -64,6 +71,11 @@
 .m {
   margin-top: 10px;
   color: black;
+  width: 200px;
+}
+.custom-tabs .v-tab {
+  font-size: 16px; /* 원하는 글씨 크기로 설정 */
+  font-weight:bold;
 }
   </style>
   

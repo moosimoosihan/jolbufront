@@ -18,6 +18,8 @@ import MainPage from './views/MainPage.vue'
 
 // 마이 페이지
 import mypageMain from './mypage/mypageMain.vue'
+import mypageAI from './mypage/mypageAI.vue'
+import myStock from './mypage/myStock.vue'
 
 // 로그인 페이지
 import login from './views/login.vue'
@@ -81,6 +83,17 @@ const routes = [
         name: 'mypageMain',
         component: mypageMain,
       },
+      {
+        path: 'ai',
+        name: 'mypageAI',
+        component: mypageAI,
+
+      },
+      {
+        path:'myStock',
+        name:'myStock',
+        component:myStock,
+      }
     ]
   },
   {
