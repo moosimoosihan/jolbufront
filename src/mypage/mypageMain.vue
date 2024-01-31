@@ -46,6 +46,10 @@
               >회원탈퇴
               <v-icon end icon="mdi-cancel"></v-icon>
             </v-btn>
+            <v-btn class="ma-2" color="blue" @click="gotoChangePw()">
+              비밀번호변경
+              <v-icon end icon="mdi-pencil"></v-icon>
+            </v-btn>
           </v-col>
         </v-row>
       </v-container>
@@ -79,6 +83,9 @@ export default {
     this.getUserInfo();
   },
   methods: {
+    gotoChangePw(){
+      this.$router.push({ path: '/mypage/password' });
+    },
     //유저정보
     async getUserInfo() {
       try {
@@ -153,7 +160,7 @@ export default {
             }
             try {
               const response = await axios.post(
-                `http://localhost:3000/mypage/deleteUser/${user_no}`
+                `http://localhost:3000/mypageUser/${user_no}`
               );
               if (response.data.message === "delete_success") {
                 this.$swal("한 달 뒤 탈퇴됩니다.");

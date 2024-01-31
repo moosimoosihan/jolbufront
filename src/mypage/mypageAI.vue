@@ -4,10 +4,10 @@
         <v-data-table
           class="elevation-1"
           fixed-header
+          item-key="order"
           hide-default-footer
-          show-select
           :headers="headers"
-          :items="mockai"
+          :items="mypageai"
         ></v-data-table>
       </v-app>
     </div>
@@ -18,15 +18,12 @@
     data() {
       return {
         headers: [
-          { title: '코인', value: 'coin', align:'center'},
-          { title: '평단가', value: 'price', align:'center'},
-          { title: '남은 수량', value: 'amount', align:'center'},
-          { title: '총 금액', value: 'total_price', align:'center'},
-          { title: '최초 매수일자', value: 'sale_date', align:'center'},
-          { title: '최종 매도일자', value: 'sell_date', align:'center'}
+          { title: '번호', value: 'order', align: 'center'},
+          { title: '답변', value: 'response', align:'center'},
+          { title: '날짜', value: 'date', align:'center'},
         ],
-        getmockai:[],
-        mockai:[]
+        getmypageai1:[],
+        mypageai:[]
       };
     },
     computed:{
@@ -35,27 +32,39 @@
       }
     },
     created(){
-      this.getMockai()
+      this.getmypageai()
     },
     methods: {
-      async getMockai() {
+      async getmypageai() {
+        this.mypageai=[];
             try {
               const user_no=this.user.user_no;
               const response = await axios.get(`http://localhost:3000/mypage/mypageai/${user_no}`);
-              console.log(response.data)
-              this.mockai = Object.entries(response.data)
-              .map(([coin,info]) =>({
-                coin:info.MOCK_NAME,
-                price:info.MOCK_PRICE,
-                amount:info.MOCK_AMOUNT,
-                total_price:parseInt(info.MOCK_PRICE)*parseInt(info.MOCK_AMOUNT),
-                sale_date:this.$formatDateTime(info.SALE_MOCK_DATE),
-                sell_date:!info.SELL_DATE?'매도한 날짜가 없습니다.':this.$formatDateTime(info.SELL_DATE)
-              }))
+              for(var i=0;i<response.data.length;i++){
+                this.mypageai.push({
+                    order: i + 1, // 순서를 나타내는 숫자 부여
+                    response:response.data[i].ai_response,
+                    date:this.formatDateTime(response.data[i].ai_date)
+
+                })
+              }
+              console.log(this.mypageai)
             } catch (error) {
               console.error(error);
             }
           },
+          formatDateTime(dateTime) {
+            const date = new Date(dateTime);
+            let yyyy = date.getFullYear().toString().substring(2,4);
+            let mm = date.getMonth() + 1;
+            let dd = date.getDate();
+            let hh = date.getHours();
+            let mi = date.getMinutes();
+            let ss = date.getSeconds();
+
+            const formattedDateTime = yyyy+"년"+mm+"월"+dd+"일";
+            return formattedDateTime;
+        },
       },
   };
   </script>

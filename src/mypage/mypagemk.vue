@@ -41,7 +41,7 @@ export default {
     async getMockai() {
           try {
             const user_no=this.user.user_no;
-            const response = await axios.get(`http://localhost:3000/mypage/mypageai/${user_no}`);
+            const response = await axios.get(`http://localhost:3000/mypage/mypagemk/${user_no}`);
             console.log(response.data)
             this.mockai = Object.entries(response.data)
             .map(([coin,info]) =>({

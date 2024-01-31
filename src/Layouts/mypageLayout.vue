@@ -6,19 +6,19 @@
         <v-col>
           <v-tabs direction="vertical" class="custom-tabs">
             <v-tab to="/mypage" class="m">
-              <v-icon start>mdi-account</v-icon>
+              <v-icon start>mdi-account-circle</v-icon>
               <p>내 정보</p>
             </v-tab>
-            <v-tab to="/mypage/ai" class="m">
-              <v-icon start>mdi-history</v-icon>
+            <v-tab to="/mypage/mypagemk" class="m">
+              <v-icon start>mdi-check-circle</v-icon>
               <p>모의투자</p>
             </v-tab>
             <v-tab to="/mypage/myStock" class="m">
-              <v-icon start>mdi-heart</v-icon>
+              <v-icon start>mdi-folder</v-icon>
               <p>내 종목</p>
             </v-tab>
-            <v-tab to="/mypage/mypageai" class="m">
-              <v-icon start>mdi-heart</v-icon>
+            <v-tab to="/mypage/ai" class="m">
+              <v-icon start>mdi-history</v-icon>
               <p>AI 답변</p>
             </v-tab>
           </v-tabs>
@@ -28,7 +28,6 @@
     <div class="default_content">
       <router-view />
     </div>
-    <Footer />
   </v-container>
 </template>
 

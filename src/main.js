@@ -21,6 +21,7 @@ import mypageMain from './mypage/mypageMain.vue'
 import mypagemk from './mypage/mypagemk.vue'
 import myStock from './mypage/myStock.vue'
 import mypageAI from './mypage/mypageAI.vue'
+import password from './mypage/password.vue'
 
 // 로그인 페이지
 import login from './views/login.vue'
@@ -100,6 +101,11 @@ const routes = [
         name:'mypageAI',
         component:mypageAI,
       },
+      {
+        path:'/mypage/password',
+        name:'password',
+        component:password
+      }
     ]
   },
   {
