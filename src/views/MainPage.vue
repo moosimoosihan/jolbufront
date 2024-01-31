@@ -580,6 +580,8 @@ export default {
                 rate_price: info.rate_price,
                 closing_price : info.closing_price
               }))
+          } else {
+            this.coinData = []
           }
         } catch (err) {
           console.log(err)

@@ -19,12 +19,11 @@ export default {
     return {
       headers: [
         { title: '코인', value: 'coin', align:'center'},
-        { title: '구매가', value: 'price', align:'center'},
-        { title: '현재가', value: 'close_price', align:'center'},
-        { title: '수량', value: 'amount', align:'center'},
-        { title: '총액', value: 'total_price', align:'center'},
-        { title: '매수일자', value: 'sale_date', align:'center'},
-        { title: '매도일자', value: 'sell_date', align:'center'}
+        { title: '평단가', value: 'price', align:'center'},
+        { title: '남은 수량', value: 'amount', align:'center'},
+        { title: '총 금액', value: 'total_price', align:'center'},
+        { title: '최초 매수일자', value: 'sale_date', align:'center'},
+        { title: '최종 매도일자', value: 'sell_date', align:'center'}
       ],
       getmockai:[],
       mockai:[]
@@ -43,29 +42,21 @@ export default {
           try {
             const user_no=this.user.user_no;
             const response = await axios.get(`http://localhost:3000/mypage/mypageai/${user_no}`);
+            console.log(response.data)
             this.mockai = Object.entries(response.data)
             .map(([coin,info]) =>({
               coin:info.MOCK_NAME,
               price:info.MOCK_PRICE,
-              close_price:info.CLOSE_PRICE,
-              amount:info.MOCK_SELL_AMOUNT,
-              total_price:parseInt(info.MOCK_PRICE)*parseInt(info.MOCK_SELL_AMOUNT),
-              sale_date:Date(info.SALE_MOCK_DATE),
-              sell_date:Date(info.SELL_DATE)
-
+              amount:info.MOCK_AMOUNT,
+              total_price:parseInt(info.MOCK_PRICE)*parseInt(info.MOCK_AMOUNT),
+              sale_date:this.$formatDateTime(info.SALE_MOCK_DATE),
+              sell_date:!info.SELL_DATE?'매도한 날짜가 없습니다.':this.$formatDateTime(info.SELL_DATE)
             }))
           } catch (error) {
             console.error(error);
-            console.log(this.mockai);
           }
-          console.log(this.mockai);
         },
     },
-    mounted() {
-    // 컴포넌트가 마운트될 때 자동으로 데이터를 가져오도록 설정
-    this.getMockai();
-  }
-
 };
 </script>
 <style scoped>
@@ -76,16 +67,12 @@ table {
 }
 
 th {
-  background-color: map-get (grey, "lighten-5") !important;
   border: none !important;
   box-shadow: none !important;
 }
 
 td {
-  border: solid 1px transparent;
-  border-style: solid none;
   padding: 20px;
-  background-color: map-get (shades, "white");
   height: 60px !important;
 }
 

@@ -12,7 +12,7 @@
               </v-tab>
               <v-tab to="/mypage/ai" class="m">
                 <v-icon start>mdi-history</v-icon>
-                <p>AI 히스토리</p>
+                <p>모의투자</p>
               </v-tab>
               <v-tab to="/mypage/myStock" class="m">
                 <v-icon start>mdi-heart</v-icon>
@@ -29,11 +29,11 @@
     <Footer />
   </v-container>
 </template>
-  
+
   <script>
   import Header from './header.vue'
   import Footer from './footer.vue'
-  
+
   export default {
     name: 'mypageLayout',
     components: {
@@ -53,14 +53,14 @@
     position: relative;
     min-height: 100%;
   }
-  
+
   Footer {
     width: 100%;
     height: auto;
     position : relative;
     transform : translateY(-1%);
   }
-  
+
 .m_container {
   height: 430px;
   overflow-y: scroll ;
@@ -78,4 +78,3 @@
   font-weight:bold;
 }
   </style>
-  
