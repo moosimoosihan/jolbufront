@@ -32,7 +32,10 @@ import findPw from './views/findPw.vue'
 import signup from './views/signup.vue'
 
 // 관리자 페이지
-import admin from './admin/adminMain.vue'
+import adminMain from './admin/adminMain.vue'
+import adminAuth from './admin/adminAuth.vue'
+import adminMock from './admin/adminMock.vue'
+import adminAi from './admin/adminAi.vue'
 
 const routes = [
   {
@@ -110,14 +113,29 @@ const routes = [
   },
   {
     path: '/admin/',
-    name: 'admin',
+    name: 'adminLayout',
     component: adminLayout,
     children: [
       {
         path: '',
-        name: 'admin',
-        component: admin
-      }
+        name: 'adminMain',
+        component: adminMain
+      },
+      {
+        path: 'auth',
+        name: 'adminAuth',
+        component: adminAuth
+      },
+      {
+        path: 'mock',
+        name: 'adminMock',
+        component: adminMock
+      },
+      {
+        path: 'ai',
+        name: 'adminAi',
+        component: adminAi
+      },
     ]
   }
 ]

@@ -46,9 +46,9 @@ export default {
             this.mockai = Object.entries(response.data)
             .map(([coin,info]) =>({
               coin:info.MOCK_NAME,
-              price:info.MOCK_PRICE,
+              price: this.$currencyFormat(info.MOCK_PRICE),
               amount:info.MOCK_AMOUNT,
-              total_price:parseInt(info.MOCK_PRICE)*parseInt(info.MOCK_AMOUNT),
+              total_price: this.$currencyFormat(parseInt(info.MOCK_PRICE)*parseInt(info.MOCK_AMOUNT)),
               sale_date:this.$formatDateTime(info.SALE_MOCK_DATE),
               sell_date:!info.SELL_DATE?'매도한 날짜가 없습니다.':this.$formatDateTime(info.SELL_DATE)
             }))

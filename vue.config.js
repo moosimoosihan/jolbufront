@@ -15,6 +15,10 @@ module.exports = defineConfig({
       '^/stock': {
         target,
         changeOrigin: true
+      },
+      '^/admin': {
+        target,
+        changeOrigin: true
       }
     },
     historyApiFallback: true

@@ -197,7 +197,7 @@
                       <p>수익금 : {{ coinData.reduce((acc, cur) => acc + cur.rate_price, 0)>0?'+':'' }}{{ $currencyFormat(coinData.reduce((acc, cur) => acc + cur.rate_price, 0)) }}</p>
                     </v-col>
                     <v-col>
-                      <p>수익률 : {{(parseInt(coinData.reduce((acc, cur) => acc + cur.rate, 0))).toFixed(2) }}%</p>
+                      <p>수익률 : {{ coinData.reduce((acc, cur) => acc + cur.rate_price, 0)>0?'+':'' }}{{ (coinData.reduce((acc, cur) => acc + cur.rate_price, 0) / coinData.reduce((acc, cur) => acc + cur.total_price, 0) * 100).toFixed(2) }}%</p>
                     </v-col>
                     <v-col>
                       <p>구매 금액 : {{ $currencyFormat(coinData.reduce((acc, cur) => acc + cur.total_price, 0)) }}</p>
@@ -546,7 +546,7 @@ export default {
         })
         if(response.data.message==='구매한 종목 없음') return
 
-        this.sell_mock_amount = response.data.amount
+        this.sell_mock_amount = parseInt(response.data.amount.MOCK_AMOUNT)
       } catch (err) {
         console.log(err)
       }
