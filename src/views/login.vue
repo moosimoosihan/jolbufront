@@ -261,9 +261,6 @@
   }
 
   .logo_img{
-    //margin-left: 880px;
-    //margin-top: 200px;
-    //margin-bottom: -50px;
     width: 10%;
     margin: auto;
     display: block;
