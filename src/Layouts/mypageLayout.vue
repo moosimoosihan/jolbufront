@@ -2,26 +2,24 @@
   <v-container>
     <Header />
     <v-navigation-drawer>
-      <v-drawer>
-        <v-list>
-          <v-col>
-            <v-tabs direction="vertical" class="custom-tabs">
-              <v-tab to="/mypage" class="m">
-                <v-icon start>mdi-account</v-icon>
-                <p>내 정보</p>
-              </v-tab>
-              <v-tab to="/mypage/ai" class="m">
-                <v-icon start>mdi-history</v-icon>
-                <p>모의투자</p>
-              </v-tab>
-              <v-tab to="/mypage/myStock" class="m">
-                <v-icon start>mdi-heart</v-icon>
-                <p>내 종목</p>
-              </v-tab>
-            </v-tabs>
-          </v-col>
-        </v-list>
-      </v-drawer>
+      <v-list>
+        <v-col>
+          <v-tabs direction="vertical" class="custom-tabs">
+            <v-tab to="/mypage" class="m">
+              <v-icon start>mdi-account</v-icon>
+              <p>내 정보</p>
+            </v-tab>
+            <v-tab to="/mypage/ai" class="m">
+              <v-icon start>mdi-history</v-icon>
+              <p>모의투자</p>
+            </v-tab>
+            <v-tab to="/mypage/myStock" class="m">
+              <v-icon start>mdi-heart</v-icon>
+              <p>내 종목</p>
+            </v-tab>
+          </v-tabs>
+        </v-col>
+      </v-list>
     </v-navigation-drawer>
     <div class="default_content">
       <router-view />
