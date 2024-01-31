@@ -11,6 +11,10 @@ module.exports = defineConfig({
       '^/openai': {
         target,
         changeOrigin: true
+      },
+      '^/stock': {
+        target,
+        changeOrigin: true
       }
     },
     historyApiFallback: true
