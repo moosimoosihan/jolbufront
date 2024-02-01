@@ -127,7 +127,17 @@
                 :no-data-text="myStock?'찜한 종목이 없습니다.':'종목이 없습니다.'"
               >
                 <template v-slot:top>
-                  <v-text-field v-model="searchKeyword" placeholder="종목명을 입력하세요" clearable hide-details></v-text-field>
+                  <v-toolbar class="px-2">
+                    <v-text-field
+                      v-model="searchKeyword"
+                      clearable
+                      density="comfortable"
+                      hide-details
+                      placeholder="Search"
+                      prepend-inner-icon="mdi-magnify"
+                      variant="solo"
+                    />
+                  </v-toolbar>
                 </template>
                 <template v-slot:item="{ item }">
                   <tr class="coin_table" :class="item.changeRate==0?'rate_black': item.changeRate>0?'rate_red':'rate_blue'">
@@ -166,7 +176,17 @@
                 no-data-text="매수 및 매도할 종목이 없습니다."
               >
                 <template v-slot:top>
-                  <v-text-field v-model="searchKeyword" placeholder="종목명을 입력하세요" clearable hide-details></v-text-field>
+                  <v-toolbar class="px-2">
+                    <v-text-field
+                      v-model="searchKeyword"
+                      clearable
+                      density="comfortable"
+                      hide-details
+                      placeholder="Search"
+                      prepend-inner-icon="mdi-magnify"
+                      variant="solo"
+                    />
+                  </v-toolbar>
                 </template>
                 <template v-slot:item="{ item }">
                   <tr class="coin_table" :class="item.rate==0?'rate_black': item.rate>0?'rate_red':'rate_blue'">
