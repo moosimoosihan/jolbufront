@@ -3,6 +3,7 @@ const target = 'http://localhost:3000'
 module.exports = defineConfig({
   devServer: {
     port: 8080,
+    historyApiFallback: true,
     proxy: {
       '^/auth': {
         target,
@@ -19,9 +20,12 @@ module.exports = defineConfig({
       '^/admin': {
         target,
         changeOrigin: true
-      }
+      },
+      '^/mypage': {
+        target,
+        changeOrigin: true
+      },
     },
-    historyApiFallback: true
   },
   transpileDependencies: true,
   lintOnSave: false,

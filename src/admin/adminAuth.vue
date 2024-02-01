@@ -3,13 +3,23 @@
     <v-data-table-virtual
     :headers="headers"
     :items="userList"
-    height="100vh"
-    width="20px"
     no-data-text="등록된 회원이 없습니다."
     :search="search"
     >
     <template v-slot:top>
-      <v-text-field v-model="search" placeholder="검색할 아이디를 입력하세요."></v-text-field>
+      <v-toolbar class="px-2">
+        <v-spacer></v-spacer>
+        <v-text-field
+          v-model="search"
+          clearable
+          density="comfortable"
+          hide-details
+          placeholder="Search"
+          prepend-inner-icon="mdi-magnify"
+          style="max-width: 300px"
+          variant="solo"
+        />
+      </v-toolbar>
     </template>
     <template v-slot:item="{item}">
       <tr>
@@ -50,7 +60,7 @@ export default {
     return{
       userList: [],
       headers: [
-        { title: '회원번호', value: 'user_no', align: 'center', class:'header'},
+        { title: '회원번호', value: 'user_no', align: 'center'},
         { title: '회원아이디', value: 'id', align: 'center'},
         { title: '회원이름', value: 'name', align: 'center'},
         { title: '회원이메일', value: 'email', align: 'center'},
@@ -82,7 +92,7 @@ export default {
                   const res = await axios.get('http://localhost:3000/admin/get_alluser')
                   this.userList = res.data
                   console.log(this.userList)
-                  
+
               } catch (err) {
                   console.log(err)
               }
@@ -91,7 +101,9 @@ export default {
 }
 </script>
 <style scoped>
-
+th{
+  background-color: #f5f5f5;
+}
 tr{
   text-align: center;
 }

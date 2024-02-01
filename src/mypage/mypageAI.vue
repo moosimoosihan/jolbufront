@@ -1,16 +1,14 @@
 <template>
-    <div id="app">
-      <v-app id="inspire">
-        <v-data-table
-          class="elevation-1"
-          fixed-header
-          item-key="order"
-          hide-default-footer
-          :headers="headers"
-          :items="mypageai"
-        ></v-data-table>
-      </v-app>
-    </div>
+    <v-sheet>
+      <v-data-table
+        class="elevation-1"
+        fixed-header
+        item-key="order"
+        hide-default-footer
+        :headers="headers"
+        :items="mypageai"
+      />
+    </v-sheet>
   </template>
   <script>
   import axios from 'axios';
@@ -74,27 +72,27 @@
     border-spacing: 0 10px;
     margin-top: -10px; /* correct offset on first border spacing if desired */
   }
-  
+
   th {
     border: none !important;
     box-shadow: none !important;
   }
-  
+
   td {
     padding: 20px;
     height: 60px !important;
   }
-  
+
   td:first-child {
     border-left-style: solid;
     border-top-left-radius: 10px;
     border-bottom-left-radius: 10px;
   }
-  
+
   td:last-child {
     border-right-style: solid;
     border-bottom-right-radius: 10px;
     border-top-right-radius: 10px;
   }
   </style>
-  
+

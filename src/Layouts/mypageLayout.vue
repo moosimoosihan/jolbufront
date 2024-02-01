@@ -1,7 +1,9 @@
 <template>
   <v-container>
     <Header />
-    <v-navigation-drawer>
+    <v-navigation-drawer
+      permanent
+    >
       <v-list>
         <v-col>
           <v-tabs direction="vertical" class="custom-tabs">

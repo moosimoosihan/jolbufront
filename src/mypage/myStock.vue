@@ -1,10 +1,10 @@
 <template>
     <v-sheet>
-        <v-data-table-virtual
+        <v-data-table
+        class="elevation-1"
         :headers="headers"
         :items="likeData"
-        height="100vh"
-        width="20px"
+        hide-default-footer
         no-data-text="찜한 종목이 없습니다."
         >
             <template v-slot:item="{ item }">
@@ -29,10 +29,9 @@
                       </v-icon>
                     </td>
                 </tr>
-                
-            </template>
-        </v-data-table-virtual>
 
+            </template>
+        </v-data-table>
     </v-sheet>
 </template>
 <script>
@@ -127,7 +126,7 @@ export default {
                         }))
                         this.likeData.push(data[0])
                     }
-                    
+
                 } catch (err) {
                     console.log(err)
                 }

@@ -1,6 +1,8 @@
 <template>
   <v-container>
-    <v-navigation-drawer>
+    <v-navigation-drawer
+      permanent
+    >
       <v-list>
         <v-tabs direction="vertical" class="custom-tabs">
           <v-tab to="/admin/" class="m">

@@ -1,18 +1,16 @@
-
 <template>
-  <div id="app">
-    <v-app id="inspire">
-      <v-data-table
-        class="elevation-1"
-        fixed-header
-        hide-default-footer
-        :headers="headers"
-        :items="mockai"
-        :search="search"
-      >
-      <template v-slot:top>
-        <v-toolbar class="px-2">
-          <v-spacer></v-spacer>
+  <v-sheet>
+    <v-data-table
+      class="elevation-1"
+      fixed-header
+      hide-default-footer
+      :headers="headers"
+      :items="mockai"
+      :search="search"
+    >
+    <template v-slot:top>
+      <v-toolbar class="px-2">
+        <v-spacer></v-spacer>
           <v-text-field
             v-model="search"
             clearable
@@ -22,12 +20,11 @@
             prepend-inner-icon="mdi-magnify"
             style="max-width: 300px"
             variant="solo"
-          ></v-text-field>
+          />
         </v-toolbar>
       </template>
     </v-data-table>
-    </v-app>
-  </div>
+  </v-sheet>
 </template>
 <script>
 import axios from 'axios';

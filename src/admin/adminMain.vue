@@ -1,75 +1,71 @@
 <template>
-  <v-app id="inspire">
-    <v-main>
-      <v-container>
-        <v-row>
-          <v-col cols="3">
-            <v-card height="80">
-              <v-card-title>총 유저 수</v-card-title>
-              <v-card-text>{{ count.user_count }} 명</v-card-text>
-            </v-card>
-          </v-col>
-          <v-col cols="3">
-            <v-card height="80">
-              <v-card-title>총 관리자 수</v-card-title>
-              <v-card-text>{{ count.admin_count }} 명</v-card-text>
-            </v-card>
-          </v-col>
-          <v-col cols="3">
-            <v-card height="80">
-              <v-card-title>총 거래 수</v-card-title>
-              <v-card-text>{{ count.buy_count }} 개</v-card-text>
-            </v-card>
-          </v-col>
-          <v-col cols="3">
-            <v-card height="80">
-              <v-card-title>총 AI 응답 수</v-card-title>
-              <v-card-text>{{ count.ai_count }} 개</v-card-text>
-            </v-card>
-          </v-col>
-          <v-col cols="8">
-            <v-card height="250">
-              <v-card-title>모의 투자 날짜별 거래 수</v-card-title>
-              <ApexCharts
-                class="chart"
-                ref="barChart"
-                type="bar"
-                height="200"
-                :options="barChartOptions1"
-                :series="barChartSeries1"
-              />
-            </v-card>
-          </v-col>
-          <v-col cols="4">
-            <v-card height="250">
-              <v-card-title>모의 투자 구매 수량 많은 종목</v-card-title>
-              <apex-charts
-                class="chart"
-                ref="barChart"
-                type="bar"
-                height="200"
-                :options="barChartOptions2"
-                :series="barChartSeries2"
-              />
-            </v-card>
-          </v-col>
-          <v-col cols="5">
-            <v-card height="250">
-              <v-card-title>24시간내 판매량 백분율</v-card-title>
-              <apex-charts
-                class="chart"
-                ref="pieChart"
-                type="pie"
-                height="200"
-                :options="pieChartOptions"
-                :series="pieChartSeries"
-              />
-            </v-card>
-          </v-col>
-        </v-row>
-      </v-container>
-    </v-main>
-  </v-app>
+  <v-sheet>
+    <v-row>
+      <v-col cols="3">
+        <v-card height="80">
+          <v-card-title>총 유저 수</v-card-title>
+          <v-card-text>{{ count.user_count }} 명</v-card-text>
+        </v-card>
+      </v-col>
+      <v-col cols="3">
+        <v-card height="80">
+          <v-card-title>총 관리자 수</v-card-title>
+          <v-card-text>{{ count.admin_count }} 명</v-card-text>
+        </v-card>
+      </v-col>
+      <v-col cols="3">
+        <v-card height="80">
+          <v-card-title>총 거래 수</v-card-title>
+          <v-card-text>{{ count.buy_count }} 개</v-card-text>
+        </v-card>
+      </v-col>
+      <v-col cols="3">
+        <v-card height="80">
+          <v-card-title>총 AI 응답 수</v-card-title>
+          <v-card-text>{{ count.ai_count }} 개</v-card-text>
+        </v-card>
+      </v-col>
+      <v-col cols="8">
+        <v-card height="250">
+          <v-card-title>모의 투자 날짜별 거래 수</v-card-title>
+          <ApexCharts
+            class="chart"
+            ref="barChart"
+            type="bar"
+            height="200"
+            :options="barChartOptions1"
+            :series="barChartSeries1"
+          />
+        </v-card>
+      </v-col>
+      <v-col cols="4">
+        <v-card height="250">
+          <v-card-title>모의 투자 구매 수량 많은 종목</v-card-title>
+          <apex-charts
+            class="chart"
+            ref="barChart"
+            type="bar"
+            height="200"
+            :options="barChartOptions2"
+            :series="barChartSeries2"
+          />
+        </v-card>
+      </v-col>
+      <v-col cols="5">
+        <v-card height="250">
+          <v-card-title>24시간내 판매량 백분율</v-card-title>
+          <apex-charts
+            class="chart"
+            ref="pieChart"
+            type="pie"
+            height="200"
+            :options="pieChartOptions"
+            :series="pieChartSeries"
+          />
+        </v-card>
+      </v-col>
+    </v-row>
+  </v-sheet>
 </template>
 <script>
 import axios from 'axios'

@@ -1,60 +1,53 @@
 <template>
-  <v-app id="inspire">
-    <v-main>
-      <v-container>
-        <v-row> </v-row>
-        <v-row>
-          <v-col class="name">
-            <span class="s">이름</span>
-            <v-text-field
-              id="name"
-              type="text"
-              v-model="user_name"
-              :placeholder="UserInfo.NAME"
-            />
-            <p class="alert_font">&nbsp;</p>
-          </v-col>
-        </v-row>
-        <v-row>
-          <v-col class="email">
-            <span class="s">이메일</span>
-            <v-text-field id="email" type="text" v-model="UserInfo.EMAIL" :placeholder="UserInfo.EMAIL" @input="email_check()"/>
-            <p class="alert_font" v-if="email_check_bool === 1" style="color: red">사용할 수 없는 이메일입니다.</p>
-            <p class="alert_font" v-else-if="email_check_bool === 2">사용 가능한 이메일입니다.</p>
-            <p class="alert_font" v-else>&nbsp;</p>
-          </v-col>
-        </v-row>
-        <v-row> </v-row>
-        <v-row> </v-row>
-        <v-row>
-          <v-col cols="6" sm="7" md="5">
-            <p class="pns">투자성향</p>
-            <v-select
-              v-model="user_pns"
-              :items="['방어적인', '보통', '공격적인']"
-              class="my-select"
-            />
-          </v-col>
-        </v-row>
-        <v-row>
-          <v-col cols="6">
-            <v-btn class="ma-2" color="blue" @click="onSubmitForm">
-              수정하기
-              <v-icon end icon="mdi-pencil"></v-icon>
-            </v-btn>
-              <v-btn class="ma-2" color="blue" @click="gotoChangePw()">
-              비밀번호변경
-              <v-icon end icon="mdi-wrench"></v-icon>
-            </v-btn>
-            <v-btn class="ma-2" @click="userDelete"
-              >회원탈퇴
-              <v-icon end icon="mdi-cancel"></v-icon>
-            </v-btn>
-          </v-col>
-        </v-row>
-      </v-container>
-    </v-main>
-  </v-app>
+  <v-sheet>
+    <v-row>
+      <v-col class="name">
+        <span class="s">이름</span>
+        <v-text-field
+          id="name"
+          type="text"
+          v-model="user_name"
+          :placeholder="UserInfo.NAME"
+        />
+        <p class="alert_font">&nbsp;</p>
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col class="email">
+        <span class="s">이메일</span>
+        <v-text-field id="email" type="text" v-model="UserInfo.EMAIL" :placeholder="UserInfo.EMAIL" @input="email_check()"/>
+        <p class="alert_font" v-if="email_check_bool === 1" style="color: red">사용할 수 없는 이메일입니다.</p>
+        <p class="alert_font" v-else-if="email_check_bool === 2">사용 가능한 이메일입니다.</p>
+        <p class="alert_font" v-else>&nbsp;</p>
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col>
+        <p class="pns">투자성향</p>
+        <v-select
+          v-model="user_pns"
+          :items="['방어적인', '보통', '공격적인']"
+          class="my-select"
+        />
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col cols="6">
+        <v-btn class="ma-2" color="blue" @click="onSubmitForm">
+          수정하기
+          <v-icon end icon="mdi-pencil"></v-icon>
+        </v-btn>
+          <v-btn class="ma-2" color="blue" @click="gotoChangePw()">
+          비밀번호변경
+          <v-icon end icon="mdi-wrench"></v-icon>
+        </v-btn>
+        <v-btn class="ma-2" @click="userDelete"
+          >회원탈퇴
+          <v-icon end icon="mdi-cancel"></v-icon>
+        </v-btn>
+      </v-col>
+    </v-row>
+  </v-sheet>
 </template>
 <script>
 import axios from "axios";
@@ -259,9 +252,5 @@ export default {
 };
 </script>
 <style scoped>
-.my-select {
-  height: 56px; /* 원하는 높이로 설정 */
-  width: 1150px;
-  /* 필요한 다른 스타일링 속성 추가 */
-}
+
 </style>

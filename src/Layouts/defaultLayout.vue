@@ -34,7 +34,7 @@ export default {
         const response = await axios.post(`http://localhost:3000/admin/admin_check`, {
           user_no: this.user.user_no
         })
-        if (response.data.auth === 'admin') return this.$router.push('/admin/')
+        if (response.data.auth === 'admin') return this.$router.push('/admin')
       } catch (error) {
         console.error(error)
       }

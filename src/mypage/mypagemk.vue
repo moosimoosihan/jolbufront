@@ -1,16 +1,12 @@
 <template>
-  <div id="app">
-    <v-app id="inspire">
-      <v-data-table
-        class="elevation-1"
-        fixed-header
-        hide-default-footer
-        show-select
-        :headers="headers"
-        :items="mockai"
-      ></v-data-table>
-    </v-app>
-  </div>
+  <v-sheet>
+    <v-data-table
+      class="elevation-1"
+      hide-default-footer
+      :headers="headers"
+      :items="mockai"
+    ></v-data-table>
+  </v-sheet>
 </template>
 <script>
 import axios from 'axios';
