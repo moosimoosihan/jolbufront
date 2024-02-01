@@ -59,8 +59,21 @@
             ref="pieChart"
             type="pie"
             height="200"
-            :options="pieChartOptions"
-            :series="pieChartSeries"
+            :options="pieChartOptions1"
+            :series="pieChartSeries1"
+          />
+        </v-card>
+      </v-col>
+      <v-col cols="7">
+        <v-card height="250">
+          <v-card-title>24시간내 변동량이 높은 순</v-card-title>
+          <apex-charts
+            class="chart"
+            ref="pieChart"
+            type="pie"
+            height="200"
+            :options="pieChartOptions2"
+            :series="pieChartSeries2"
           />
         </v-card>
       </v-col>
@@ -107,7 +120,7 @@ export default {
             enabled: false
           },
         },
-        colors: ['#ff9e2b'],
+        colors: ['#008FFB'],
         plotOptions: {
           bar: {
             columnWidth: '50%',
@@ -134,7 +147,7 @@ export default {
             enabled: false
           },
         },
-        colors: ['#ff9e2b'],
+        colors: ['#008FFB'],
         plotOptions: {
           bar: {
             columnWidth: '50%',
@@ -142,8 +155,8 @@ export default {
           }
         },
       },
-      pieChartSeries: [44, 55, 13, 43, 22],
-      pieChartOptions: {
+      pieChartSeries1: [],
+      pieChartOptions1: {
         chart: {
           type: 'pie',
           toolbar: {
@@ -162,11 +175,42 @@ export default {
             enabled: false
           },
         },
-        labels: ['Apple', 'Mango', 'Orange', 'Watermelon', 'Guava'],
-        colors: ['#2bff5c', '#992bff', '#eaff2b', '#ff9e2b', '#ff9e2b'],
-        legend: {
-          show: false
+        labels: [],
+        colors: ['#008FFB', '#00E396', '#FEB019', '#FF4560', '#775DD0'],
+        responsive: [{
+          breakpoint: 480,
+          options: {
+            chart: {
+              width: 200
+            },
+            legend: {
+              position: 'bottom'
+            }
+          }
+        }]
+      },
+      pieChartSeries2: [],
+      pieChartOptions2: {
+        chart: {
+          type: 'pie',
+          toolbar: {
+            show: false,
+            tools: {
+              download: false,
+              zoom: false,
+              zoomin: false,
+              zoomout: false,
+              pan: false,
+              reset: false,
+              customIcons: []
+            },
+          },
+          animations: {
+            enabled: false
+          },
         },
+        labels: [],
+        colors: ['#008FFB', '#00E396', '#FEB019', '#FF4560', '#775DD0'],
         responsive: [{
           breakpoint: 480,
           options: {
@@ -185,6 +229,8 @@ export default {
     this.getCount()
     this.getBuyChart()
     this.getMockRandChart()
+    this.getVolumeRank()
+    this.getChangeRank()
   },
   methods: {
     async getCount() {
@@ -218,6 +264,30 @@ export default {
             x: response.data[i].mock_name,
             y: response.data[i].sum_amount
           })
+        }
+      } catch(e) {
+        console.log(e)
+      }
+    },
+    async getVolumeRank() {
+      this.pieChartSeries1 = []
+      try {
+        const response = await axios.get('http://localhost:3000/admin/volume_rank')
+        for(let i=0;i<response.data.length;i++){
+          this.pieChartOptions1.labels.push(response.data[i].code)
+          this.pieChartSeries1.push(response.data[i].units_traded)
+        }
+      } catch(e) {
+        console.log(e)
+      }
+    },
+    async getChangeRank() {
+      this.pieChartSeries2 = []
+      try {
+        const response = await axios.get('http://localhost:3000/admin/change_rank')
+        for(let i=0;i<response.data.length;i++){
+          this.pieChartOptions2.labels.push(response.data[i].code)
+          this.pieChartSeries2.push(response.data[i].fluctate_rate_24H)
         }
       } catch(e) {
         console.log(e)
