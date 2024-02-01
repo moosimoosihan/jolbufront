@@ -248,8 +248,42 @@ export default {
       }
       this.email_check_bool = 2;
     },
-  },
-};
+    // 회원탈퇴
+    async userDelete() {
+        const user_no = this.user.user_no; // 추가된 코드
+
+        this.$swal.fire({
+            title: "정말 탈퇴하시겠습니까?",
+            showCancelButton: true,
+            confirmButtonText: `탈퇴`,
+            cancelButtonText: `취소`,
+        })
+        .then(async (result) => {
+            if (result.isConfirmed) {
+                if (this.UserInfo.length == 0) {
+                    this.$swal("데이터가 존재하지 않습니다.");
+                    return;
+                }
+                try {
+                    const response = await axios.delete(`http://localhost:3000/mypage/mypageUser/${user_no}`);
+                if (response.data.message === "회원탈퇴성공") {
+                  this.$swal("탈퇴 되었습니다.");
+                  if (this.UserInfo.social == 1) {
+                    window.Kakao.Auth.logout();
+                  }
+                  this.$store.commit("user", { user_no: "", user_id: "" });
+                  this.$router.push({ path: "/" });
+                } else {
+                  this.$swal("탈퇴에 실패했습니다.");
+                }
+              } catch (error) {
+                console.error(error);
+              }
+            }
+        });
+      }
+    }
+}
 </script>
 <style scoped>
 
