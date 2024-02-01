@@ -48,5 +48,15 @@ export default {
         return formattedDateTime;
       }
     },
+    $usersocial(num){
+      switch(num){
+        case 0:
+          return 'Local'
+        case 1:
+          return 'Kakao'
+        case 2:
+          return 'Never'
+      }
+    }
   }
 }
