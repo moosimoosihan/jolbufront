@@ -8,20 +8,20 @@
             <p>관리자 홈</p>
           </v-tab>
           <v-tab to="/admin/auth" class="m">
-            <v-icon start>mdi-history</v-icon>
+            <v-icon start>mdi-account-multiple</v-icon>
             <p>회원 관리</p>
           </v-tab>
           <v-tab to="/admin/mock" class="m">
-            <v-icon start>mdi-heart</v-icon>
+            <v-icon start>mdi-folder</v-icon>
             <p>모의 투자</p>
           </v-tab>
           <v-tab to="/admin/ai" class="m">
-            <v-icon start>mdi-heart</v-icon>
+            <v-icon start>mdi-history</v-icon>
             <p>AI 답변</p>
           </v-tab>
           <v-tab @click="logout()" class="m">
-            <v-icon start>mdi-heart</v-icon>
-            <p>로그 아웃</p>
+            <v-icon start>mdi-minus-circle</v-icon>
+            <p>로그아웃</p>
           </v-tab>
         </v-tabs>
       </v-list>
