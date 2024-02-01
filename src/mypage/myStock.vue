@@ -1,7 +1,6 @@
 <template>
     <v-sheet>
         <v-data-table
-        class="elevation-1"
         :headers="headers"
         :items="likeData"
         hide-default-footer

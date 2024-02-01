@@ -1,7 +1,6 @@
 <template>
     <v-sheet>
       <v-data-table
-        class="elevation-1"
         fixed-header
         item-key="order"
         hide-default-footer

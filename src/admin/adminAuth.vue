@@ -7,20 +7,28 @@
     :search="search"
     >
     <template v-slot:top>
-      <v-toolbar class="px-2">
-        <v-spacer></v-spacer>
-        <v-text-field
-          v-model="search"
-          clearable
-          density="comfortable"
-          hide-details
-          placeholder="Search"
-          prepend-inner-icon="mdi-magnify"
-          style="max-width: 300px"
-          variant="solo"
-        />
-      </v-toolbar>
+      <v-card-title class="d-flex align-center pe-2">
+      <v-spacer></v-spacer>
+      <v-text-field
+        v-model="search"
+        prepend-inner-icon="mdi-magnify"
+        density="compact"
+        label="Search"
+        single-line
+        flat
+        hide-details
+        variant="solo-filled"
+      ></v-text-field>
+    </v-card-title>
     </template>
+    <template v-slot:bottom>
+        <div class="text-center pt-2">
+          <v-pagination 
+          v-model="page" 
+          :length="pageCount"
+          ></v-pagination>
+        </div>
+      </template>
     <template v-slot:item="{item}">
       <tr>
         <td>

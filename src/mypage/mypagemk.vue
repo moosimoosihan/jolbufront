@@ -1,11 +1,11 @@
 <template>
   <v-sheet>
     <v-data-table
-      class="elevation-1"
       hide-default-footer
       :headers="headers"
       :items="mockai"
-    ></v-data-table>
+    >
+  </v-data-table>
   </v-sheet>
 </template>
 <script>

@@ -106,7 +106,7 @@ export default {
   color: black;
   width: 200px;
 }
-.custom-tabs v-tab {
+.custom-tabs .v-tab {
   font-size: 16px; /* 원하는 글씨 크기로 설정 */
   font-weight:bold;
 }
