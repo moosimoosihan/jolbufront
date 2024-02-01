@@ -37,18 +37,18 @@
           </v-col>
         </v-row>
         <v-row>
-          <v-col cols="3">
+          <v-col cols="6">
             <v-btn class="ma-2" color="blue" @click="onSubmitForm">
               수정하기
               <v-icon end icon="mdi-pencil"></v-icon>
             </v-btn>
+              <v-btn class="ma-2" color="blue" @click="gotoChangePw()">
+              비밀번호변경
+              <v-icon end icon="mdi-wrench"></v-icon>
+            </v-btn>
             <v-btn class="ma-2" @click="userDelete"
               >회원탈퇴
               <v-icon end icon="mdi-cancel"></v-icon>
-            </v-btn>
-            <v-btn class="ma-2" color="blue" @click="gotoChangePw()">
-              비밀번호변경
-              <v-icon end icon="mdi-pencil"></v-icon>
             </v-btn>
           </v-col>
         </v-row>

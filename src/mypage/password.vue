@@ -1,5 +1,6 @@
 <template>
-    <v-main class="form">
+    <v-app id="inspire">
+    <v-main>
         <v-container class="login-form text-center">
             <v-text-field v-model="user_pw" :type="showPassword ? 'text' : 'password'" label="기존 비밀번호" prepend-icon="mdi-lock" :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'" @click:append="showPassword = !showPassword"></v-text-field>
             <v-text-field v-model="user_npw" :type="showPassword ? 'text' : 'password'" label="새 비밀번호" prepend-icon="mdi-lock" :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"  @click:append="showPassword = !showPassword" ></v-text-field>
@@ -9,6 +10,7 @@
             <p v-else-if="user_npw!=user_pw_ck" class="error">비밀번호가 다릅니다.</p>
         </v-container>
     </v-main>
+    </v-app>
 </template>
 <script> 
     import axios from 'axios';
