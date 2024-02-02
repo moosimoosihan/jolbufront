@@ -6,7 +6,7 @@
     >
       <template v-slot:top>
         <v-toolbar flat>
-          <v-toolbar-title>수익률 랭킹</v-toolbar-title>
+          <v-toolbar-title class="rank">수익률 랭킹</v-toolbar-title>
         </v-toolbar>
       </template>
       <template v-slot:item="{item}">
@@ -57,10 +57,15 @@ export default {
 }
 </script>
 <style scoped>
+.rank{
+  font-weight: 900;
+  margin-left:54px;
+}
 .rateRank {
   width: 250px;
   height: 500px;
-  border: 1px solid #ccc;
+  font-weight: 900;
+  border: 1px solid #fafafa;
   padding: 10px;
   display: flex;
   flex-direction: column-reverse;
@@ -68,6 +73,46 @@ export default {
   top: 10%;
   right: 82.5%;
 
-  background: seashell;
+  background: rgb(255, 242, 243);
+}
+
+/* 마우스 호버시 */
+.dropbtn {
+  background-color: #4CAF50;
+  color: white;
+  padding: 16px;
+  font-size: 16px;
+  border: none;
+  cursor: pointer;
+}
+
+
+.dropdown {
+  display: inline-block;
+}
+
+.dropdown-content {
+  display: none;
+  background-color: #f9f9f9;
+  min-width: 160px;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  z-index: 1;
+}
+
+.dropdown-content a {
+  color: black;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+}
+
+.dropdown-content a:hover {background-color: #f1f1f1}
+
+.dropdown:hover .dropdown-content {
+  display: block;
+}
+
+.dropdown:hover .dropbtn {
+  background-color: #3e8e41;
 }
 </style>
