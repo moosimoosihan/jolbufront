@@ -6,7 +6,7 @@
     >
       <template v-slot:top>
         <v-toolbar flat>
-          <v-toolbar-title>수익률 랭킹</v-toolbar-title>
+          <v-toolbar-title class="rank">수익률 랭킹</v-toolbar-title>
         </v-toolbar>
       </template>
       <template v-slot:item="{item}">
@@ -57,10 +57,15 @@ export default {
 }
 </script>
 <style scoped>
+.rank{
+  font-weight: 900;
+  margin-left:54px;
+}
 .rateRank {
   width: 250px;
   height: 500px;
-  border: 1px solid #ccc;
+  font-weight: 900;
+  border: 1px solid #fafafa;
   padding: 10px;
   display: flex;
   flex-direction: column-reverse;
@@ -68,7 +73,7 @@ export default {
   top: 10%;
   right: 82.5%;
 
-  background: seashell;
+  background: rgb(255, 242, 243);
 }
 
 /* 마우스 호버시 */
@@ -88,9 +93,9 @@ export default {
 
 .dropdown-content {
   display: none;
-  background-color: #f9f9f9;
+  background-color: #f0faf1;
   min-width: 160px;
-  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  box-shadow: 0px 8px 16px 0px rgba(245, 245, 245, 0.486);
   z-index: 1;
 }
 
