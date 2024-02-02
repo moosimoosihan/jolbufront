@@ -4,6 +4,7 @@
       {{ chatBoxVisible ? '채팅 닫기' : '채팅 열기' }}
     </v-btn>
     <v-list class="chat" v-show="chatBoxVisible">
+      <rateRank />
         <v-list-item v-for="(msg, i) in chatList" :key="i">
           <v-row class="message">
             <v-col cols="12">
@@ -26,6 +27,7 @@
 <script>
 import io from "socket.io-client";
 import axios from "axios";
+import rateRank from '@/views/rateRank.vue'
 
 export default {
   data() {
@@ -38,6 +40,9 @@ export default {
       chatBoxVisible: false,
       myName: '',
     }
+  },
+  components: {
+    rateRank
   },
   created() {
     this.socket.on('connect', () => {

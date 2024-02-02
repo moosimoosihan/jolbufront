@@ -240,7 +240,7 @@
                 </v-card-text>
               </v-card>
             </v-col>
-            <!--<rateRank />-->
+            <rateRank />
             <chat />
           </v-col>
         </v-row>
@@ -252,11 +252,10 @@
 import axios from 'axios'
 import ApexCharts from 'vue3-apexcharts'
 import chat from '/src/views/chat.vue'
-import rateRank from '/src/views/rateRank.vue'
 
 export default {
   name: 'MainPage',
-  components: { ApexCharts, chat, rateRank },
+  components: { ApexCharts, chat },
   data () {
     return {
       headers: [

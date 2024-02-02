@@ -4,11 +4,16 @@
       :headers="headers"
       :items="rateRank"
     >
+      <template v-slot:top>
+        <v-toolbar flat>
+          <v-toolbar-title>수익률 랭킹</v-toolbar-title>
+        </v-toolbar>
+      </template>
       <template v-slot:item="{item}">
         <tr>
           <td>{{ item.rank }}</td>
           <td>{{ item.name }}</td>
-          <td>{{ item.rate }}</td>
+          <td>{{ item.mock_rate.toFixed(2) }}%</td>
         </tr>
       </template>
     </v-data-table-virtual>
@@ -23,7 +28,7 @@ export default {
       headers: [
         { title:'순위', value: 'rank'},
         { title:'닉네임', value: 'name' },
-        { title:'수익률', value: 'rate'},
+        { title:'수익률', value: 'mock_rate'},
       ],
       rateRank: []
     }
@@ -36,6 +41,7 @@ export default {
       axios.get('http://localhost:3000/stock/rateRank')
         .then(res => {
           // rank 추가
+          console.log(res.data)
           this.rateRank = res.data.map((item, index) => {
             return {
               ...item,
