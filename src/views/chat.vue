@@ -3,24 +3,69 @@
     <v-btn class="chat-button" @click="toggleChatBox" style="transition: ease-in-out">
       {{ chatBoxVisible ? '채팅 닫기' : '채팅 열기' }}
     </v-btn>
-    <v-list class="chat" v-show="chatBoxVisible">
+    <v-container class="pa-0 chat" v-show="chatBoxVisible">
       <rateRank />
-        <v-list-item v-for="(msg, i) in chatList.slice().reverse()" :key="i">
-          <v-row class="message">
-            <v-col cols="12">
-              <span class="message-content">{{ msg.name }}님 : {{ msg.chat_content }}</span>
-            </v-col>
-          </v-row>
-        </v-list-item>
-        <v-row class="input-form">
-          <v-col cols="10">
-            <v-text-field v-model="chat_content" @keydown.enter="send" placeholder="입력" />
-          </v-col>
-          <v-col cols="2">
-            <v-btn @click="send">↲</v-btn>
-          </v-col>
-        </v-row>
-    </v-list>
+      <v-row class="no-gutters elevation-4">
+        <v-col
+          cols="auto"
+          class="flex-grow-1 flex-shrink-0"
+        >
+          <v-card
+            flat
+            class="d-flex flex-column"
+          >
+            <v-card-title>
+              실시간 채팅
+            </v-card-title>
+            <v-card-text class="overflow-y-auto chat_card">
+              <template v-for="(msg, i) in chatList">
+                <div
+                  :class="{ 'd-flex flex-row-reverse': msg.user_no===user.user_no, 'd-flex flex-row': msg.user_no!==user.user_no}"
+                >
+                  <v-menu offset-y>
+                    <template v-slot:activator="{ on }">
+                      <v-chip
+                        :color="msg.user_no===user.user_no ? 'primary' : ''"
+                        dark
+                        style="height:auto;white-space: normal;"
+                        class="pa-4 mb-2"
+                        v-on="on"
+                      >
+                        {{ msg.chat_content }}
+                        <sub
+                          class="ml-2"
+                          style="font-size: 0.5rem;"
+                        >{{ msg.date }}</sub>
+                      </v-chip>
+                    </template>
+                  </v-menu>
+                </div>
+              </template>
+            </v-card-text>
+            <v-card-text>
+              <v-row>
+                <v-text-field
+                  v-model="chat_content"
+                  label="메시지를 입력하세요."
+                  type="text"
+                  no-details
+                  outlined
+                  append-outer-icon="send"
+                  @keyup.enter="send"
+                  @click:append-outer="send"
+                  hide-details
+                />
+                <v-btn
+                  @click="send"
+                  color="primary"
+                  dark
+                >전송</v-btn>
+              </v-row>
+            </v-card-text>
+          </v-card>
+        </v-col>
+      </v-row>
+    </v-container>
   </div>
 </template>
 
@@ -51,23 +96,27 @@ export default {
     })
     this.socket.on('chat', async (data) => {
       this.chatList.push({
-        chat_user: data.user_no,
+        user_no: data.user_no,
         chat_content: data.chat_content,
-        name: data.name
+        name: data.name,
+        date: data.date
       });
       this.scroll()
     })
     this.getUser()
   },
   methods: {
+    scroll(){
+      setTimeout(() => {
+        var chat_card = document.querySelector('.chat_card');
+        chat_card.scrollTop = chat_card.scrollHeight;
+      }, 100)
+    },
     toggleChatBox() {
       this.chatBoxVisible = !this.chatBoxVisible;
-    },
-    scroll() {
-      setTimeout(() => {
-        const scroll = document.getElementById('scroll');
-        scroll.scrollTop = scroll.scrollHeight;
-      }, 100);
+      if(this.chatBoxVisible) {
+        this.scroll()
+      }
     },
     async getUser() {
       try {
@@ -91,24 +140,28 @@ export default {
       try {
         const chat_date = this.$formatDateTime(new Date(), true);
         const chat_content = this.chat_content;
-        const chat_user = this.user.user_no;
+        const user_no = this.user.user_no;
 
         const response = await axios.post(`http://localhost:3000/chat/send`, {
           chat_content,
           chat_date,
-          chat_user
+          user_no
         });
         if(response.data.message === 'success') {
           this.socket.emit('chat', {
-            chat_content: this.chat_content,
-            chat_user: this.user.user_no,
-            name: this.myName
+            chat_content: chat_content,
+            user_no: user_no,
+            name: this.myName,
+            date: chat_date
           })
           this.chatList.push({
+            user_no: user_no,
             name: this.myName,
-            chat_content: this.chat_content
+            chat_content: chat_content,
+            date: chat_date
           });
           this.chat_content = '';
+          this.scroll()
         } else {
           console.log('전송 실패');
         }
@@ -134,90 +187,23 @@ export default {
 </script>
 <style scoped>
 .chat {
-  width: 450px;
-  height: 400px;
-  border: 1px solid #ccc;
-  padding: 10px;
-  display: flex;
-  flex-direction: column-reverse;
+  top: 60px;
+  right: 20px;
+  width: 300px; /* Set your desired width */
+  min-height: 400px;
+  max-height: 400px;
   position: fixed;
-  top: 13%;
-  left: 65%;
-  background: #ffffff;
-  border-radius: 5px;
 }
-
-.message {
-  max-width: 430px;
-  border: 1px solid #bec5d7;
-  margin: 12px;
-  border-radius: 4px;
-  padding: 10px;
-  font-size: 12px;
-  display: inline-block;
-  position: relative;
-  text-align: right;
+.chat_card {
+  min-height: 400px;
+  max-height: 400px;
 }
-.message-content {
-  border-radius: 5%;
-  font-size: x-small;
-}
-
-.input-form {
-  width: 290px;
-  align-items: center;
-  margin-top: 10px;
-  position: fixed;
-  top: 55%;
-  left: 65%;
-}
-
-.input-form input {
-  flex: 1;
-  padding: 5px;
-  border: none;
-  border-radius: 5px;
-  height: 2px;
-}
-
-.input-form button {
-  padding: 1px 5px;
-  margin-left: 10px;
-  border: none;
-  background-color: #333;
-  color: #fff;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: x-small;
-  position: fixed;
-  top: 500px;
-  left: 87%;
-}
-
-.input-form button:hover {
-  background-color: #555;
-}
-#scroll {
-  overflow-y: scroll;
-}
-/* 마우스 호버 시 애니메이션 효과 설정 */
-.message:hover {
-
-}
-
 .chat-button {
   position: fixed;
-  top: 90%;
-  left: 90%;
-  background-color: #333;
-  color: #fff;
-  border-radius: 85px;
-  cursor: pointer;
-  font-size: x-small;
-  text-align: center;
+  bottom: 50px;
+  right: 20px;
 }
-.chat-button:hover {
-  background-color: #555;
-  transition-timing-function: ease-in-out;
+.v-application__wrap{
+  min-height: 0;
 }
 </style>
