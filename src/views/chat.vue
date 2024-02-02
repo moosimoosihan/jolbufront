@@ -5,7 +5,7 @@
     </v-btn>
     <v-list class="chat" v-show="chatBoxVisible">
       <rateRank />
-        <v-list-item v-for="(msg, i) in chatList" :key="i">
+        <v-list-item v-for="(msg, i) in chatList.slice().reverse()" :key="i">
           <v-row class="message">
             <v-col cols="12">
               <span class="message-content">{{ msg.name }}님 : {{ msg.chat_content }}</span>
@@ -135,13 +135,13 @@ export default {
 <style scoped>
 .chat {
   width: 450px;
-  height: 500px;
+  height: 400px;
   border: 1px solid #ccc;
   padding: 10px;
   display: flex;
   flex-direction: column-reverse;
   position: fixed;
-  top: 6%;
+  top: 13%;
   left: 65%;
   background: #ffffff;
   border-radius: 5px;
@@ -168,7 +168,7 @@ export default {
   align-items: center;
   margin-top: 10px;
   position: fixed;
-  top: 59%;
+  top: 55%;
   left: 65%;
 }
 
@@ -190,7 +190,7 @@ export default {
   cursor: pointer;
   font-size: x-small;
   position: fixed;
-  top: 63%;
+  top: 500px;
   left: 87%;
 }
 
