@@ -1,7 +1,7 @@
 <template>
   <div>
-    <v-btn class="chat-button" @click="toggleChatBox" style="transition: ease-in-out">
-      {{ chatBoxVisible ? '채팅 닫기' : '채팅 열기' }}
+    <v-btn v-if="!chatBoxVisible" class="chat-button" @click="toggleChatBox" style="transition: ease-in-out">
+      <v-icon color="blue" size="25">mdi-chat</v-icon>
     </v-btn>
     <v-container class="pa-0 chat" v-show="chatBoxVisible">
       <rateRank />
@@ -13,10 +13,12 @@
           <v-card
             flat
             class="d-flex flex-column"
+            color="#E3F2FD"
           >
-            <v-card-title>
-              실시간 채팅
-            </v-card-title>
+          <v-toolbar color="primary">
+            <v-toolbar-title>실시간 채팅</v-toolbar-title>
+            <v-icon class="mr-2" @click="toggleChatBox">mdi-close-circle</v-icon>
+          </v-toolbar>
             <v-card-text class="overflow-y-auto chat_card">
               <template v-for="(msg, i) in chatList">
                 <div
@@ -25,19 +27,20 @@
                   <v-menu offset-y>
                     <template v-slot:activator="{ on }">
                       <v-chip
-                        :color="msg.user_no===user.user_no ? 'primary' : ''"
-                        dark
-                        style="height:auto;white-space: normal;"
-                        class="pa-4 mb-2"
-                        v-on="on"
+                       :color="msg.user_no===user.user_no ? '#673AB7' : ''" 
+                      dark
+                      style="height:auto; white-space: normal;"
+                      class="pa-4 mb-2"
+                      v-on="on"
                       >
-                        {{ msg.chat_content }}
-                        <sub
-                          class="ml-2"
-                          style="font-size: 0.5rem;"
-                        >{{ msg.date }}</sub>
-                      </v-chip>
-                    </template>
+                      <span :style="{ color: msg.user_no===user.user_no ? 'indigo' : 'black' }">{{ msg.chat_content }}</span>
+                      <sub
+                      class="ml-2"
+                      :style="{ color: msg.user_no!==user.user_no ? 'gray' : 'white' }"
+                      style="font-size: 0.5rem;"
+                      >{{ msg.date }}</sub>
+                    </v-chip>
+                  </template>
                   </v-menu>
                 </div>
               </template>
@@ -50,16 +53,13 @@
                   type="text"
                   no-details
                   outlined
-                  append-outer-icon="send"
+                  append-inner-icon="mdi-arrow-up-bold-box-outline"
                   @keyup.enter="send"
-                  @click:append-outer="send"
+                  @click:append-inner="send"
                   hide-details
+                  variant="solo"
+                  style="background-color: #FFFFFF;"
                 />
-                <v-btn
-                  @click="send"
-                  color="primary"
-                  dark
-                >전송</v-btn>
               </v-row>
             </v-card-text>
           </v-card>
