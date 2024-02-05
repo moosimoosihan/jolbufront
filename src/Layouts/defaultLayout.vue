@@ -45,7 +45,7 @@ export default {
 <style scoped>
 .root_container {
   width: 100%;
-  min-width: 1300px;
+  min-width: 1450px;
 }
 .default_content {
   margin: auto;

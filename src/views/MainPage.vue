@@ -244,7 +244,6 @@
                 </v-card-text>
               </v-card>
             </v-col>
-            <rateRank />
             <chat />
           </v-col>
         </v-row>

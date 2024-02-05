@@ -1,12 +1,12 @@
 <template>
-  <v-sheet class="rateRank dropdown">
+  <v-sheet class="rateRank">
     <v-data-table-virtual
       :headers="headers"
       :items="rateRank"
     >
       <template v-slot:top>
         <v-toolbar flat>
-          <v-toolbar-title>수익률 랭킹</v-toolbar-title>
+          <v-toolbar-title class="rank">수익률 랭킹</v-toolbar-title>
         </v-toolbar>
       </template>
       <template v-slot:item="{item}">
@@ -57,10 +57,15 @@ export default {
 }
 </script>
 <style scoped>
+.rank{
+  font-weight: 900;
+  margin-left:54px;
+}
 .rateRank {
   width: 250px;
   height: 500px;
-  border: 1px solid #ccc;
+  font-weight: 900;
+  border: 1px solid #fafafa;
   padding: 10px;
   display: flex;
   flex-direction: column-reverse;
@@ -68,7 +73,7 @@ export default {
   top: 10%;
   right: 82.5%;
 
-  background: seashell;
+  background: rgb(255, 242, 243);
 }
 
 /* 마우스 호버시 */
