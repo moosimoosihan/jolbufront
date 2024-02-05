@@ -23,7 +23,7 @@
                   </v-card>
                   <v-col>
                     <v-card-title>
-                      <strong class="float-lg-right" style="color:#f24e4e">최고가 : {{ $currencyFormat(selectHighPrice) }}</strong>
+                      <strong class="float-lg-right" style="color:#f75467">최고가 : {{ $currencyFormat(selectHighPrice) }}</strong>
                     </v-card-title>
                     <v-card-title>
                       <strong class="float-lg-right" style="color:#2b6fe5">최저가 : {{ $currencyFormat(selectLowPrice) }}</strong>
@@ -244,6 +244,7 @@
                 </v-card-text>
               </v-card>
             </v-col>
+            <rateRank />
             <chat />
           </v-col>
         </v-row>
@@ -767,6 +768,7 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
+  /* background-color: #efefef; */
 }
 .coin_table {
   text-align: center;
@@ -778,9 +780,11 @@ export default {
 }
 .rate_red{
   color: #f75467;
+  margin-right: -15px;
 }
 .rate_blue{
   color: #2b6fe5;
+  margin-right: -15px;
 }
 .select {
   width: 50%;
@@ -824,6 +828,11 @@ export default {
 .mock
 .mock.title {
   font-size: 20px;
-  margin-left: 1px;
+  margin-left: -20px;
+}
+
+.mock-asset {
+  margin-left: -20px;
+  margin-bottom: 10px;
 }
 </style>
