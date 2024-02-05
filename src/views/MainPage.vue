@@ -23,10 +23,10 @@
                   </v-card>
                   <v-col>
                     <v-card-title>
-                      <strong class="float-lg-right" style="color:red">최고가 : {{ $currencyFormat(selectHighPrice) }}</strong>
+                      <strong class="float-lg-right" style="color:#f24e4e">최고가 : {{ $currencyFormat(selectHighPrice) }}</strong>
                     </v-card-title>
                     <v-card-title>
-                      <strong class="float-lg-right" style="color:blue">최저가 : {{ $currencyFormat(selectLowPrice) }}</strong>
+                      <strong class="float-lg-right" style="color:#2b6fe5">최저가 : {{ $currencyFormat(selectLowPrice) }}</strong>
                     </v-card-title>
                   </v-col>
                 </v-row>
@@ -69,33 +69,37 @@
               />
             </v-sheet>
             <v-col>
-              <v-col>
-                <p>모의 투자</p>
-                <p>현재 금액 : {{ $currencyFormat(simulatedAmount) }}</p>
+              <v-col class="mock">
+                <strong class="mock title">모의투자</strong>
+                <p class="mock-asset">현재 자산 : {{ $currencyFormat(simulatedAmount) }}</p>
               </v-col>
               <v-row>
                 <v-text-field width="50%" hide-details readonly>{{ $currencyFormat(selectPrice * (buy_mock_amount!==''?buy_mock_amount:1)) }}</v-text-field>
                 <v-text-field width="50%" v-model="buy_mock_amount" type="number" placeholder="매수 수량" hide-details></v-text-field>
                 <v-col class="no-padding">
-                  <v-btn class="rate_red" @click="mock(false)">매수</v-btn>
-                  <v-btn class="mb-3" @click="full_mock()">최대</v-btn>
+                  <v-btn class="rate_red" @click="mock(false)"  style="height: 40px;">매수</v-btn>
+                  </v-col>
+                  <v-col class="no-padding">
+                  <v-btn class="mb-3" @click="full_mock()"  style="height: 40px;">최대</v-btn>
                 </v-col>
               </v-row>
               <v-row>
                 <v-text-field width="50%" hide-details readonly>{{ $currencyFormat(selectPrice * (sell_mock_amount!==''?sell_mock_amount:1)) }}</v-text-field>
                 <v-text-field width="50%" v-model="sell_mock_amount" type="number" placeholder="매도 수량" hide-details></v-text-field>
                 <v-col class="no-padding">
-                  <v-btn class="rate_blue" @click="mock(true)">매도</v-btn>
-                  <v-btn class="mb-3" @click="getSaleStock()">최대</v-btn>
+                  <v-btn class="rate_blue" @click="mock(true)" style="height: 40px;">매도</v-btn>
+                  </v-col>
+                  <v-col class="no-padding">
+                  <v-btn class="mb-3" @click="getSaleStock()"  style="height: 40px;">최대</v-btn>
                 </v-col>
               </v-row>
             </v-col>
           </v-col>
+
           <v-col cols="6">
-            <v-btn :variant="myStock? 'outlined':saleStock?'outlined':'tonal'" width="34%" :color="myStock?'grey':saleStock?'grey':'black'" @click="myStockToggle(false)">전체종목</v-btn>
-            <v-btn :variant="myStock? 'tonal':saleStock?'outlined':'outlined'" width="33%" :color="myStock?'black':saleStock?'grey':'grey'" @click="myStockToggle(true)">찜한종목</v-btn>
-            <v-btn :variant="myStock?'outlined':saleStock?'tonal':'outlined'" width="33%" :color="myStock?'grey':saleStock?'black':'grey'" @click="saleStockToggle()">모의투자</v-btn>
-            <p>정렬 방식</p>
+            <v-btn :variant="myStock ? 'text' : saleStock ? 'text' : 'tonal'" width="34%" :color="myStock ? 'grey' : saleStock ? 'grey' : '#2b6fe5'" @click="myStockToggle(false)" class="click">전체종목</v-btn>
+            <v-btn :variant="myStock ? 'tonal' : saleStock ? 'text' : 'text'" width="33%" :color="myStock ? '#2b6fe5' : saleStock ? 'grey' : 'grey'" @click="myStockToggle(true)" class="click">찜한종목</v-btn>
+            <v-btn :variant="myStock?'text':saleStock?'tonal':'text'" width="33%" :color="myStock?'grey':saleStock?'#2b6fe5':'grey'" @click="saleStockToggle()" class="click">모의투자</v-btn>
             <select v-if="!saleStock" class="select" @change="sortTable()" v-model="sortValue">
               <option value="price">가격</option>
               <option value="coin">코인명</option>
@@ -331,8 +335,8 @@ export default {
         plotOptions: {
           candlestick: {
             colors: {
-              upward: '#FF0000',
-              downward: '#0000FF'
+              upward: '#f75467', // 업일 때 빨강
+              downward: '#2b6fe5' //다운일 때 파랑
             }
           }
         },
@@ -774,16 +778,14 @@ export default {
   color: black;
 }
 .rate_red{
-  color: red;
+  color: #f75467;
 }
 .rate_blue{
-  color: blue;
+  color: #2b6fe5;
 }
 .select {
   width: 50%;
   height: 30px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
   padding: 5px;
   font-size: 15px;
   font-weight: bold;
@@ -810,6 +812,19 @@ export default {
   padding: 0;
 }
 .no-padding {
-  padding: 0;
+  width: 100px; /* 원하는 너비로 조절 */
+  height: 60px; /* 원하는 높이로 조절 */
+  }
+
+.click {
+  color: #1b1b1b;
+  font-weight: 700;
+  height: 40px;
+}
+
+.mock
+.mock.title {
+  font-size: 20px;
+  margin-left: 1px;
 }
 </style>
