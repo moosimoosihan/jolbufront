@@ -5,8 +5,6 @@ AI 코인 플랫폼 프론트 Vue.js
 
 실행 npm run serve
 
-* 루트 폴더에 db/db.js 를 만들어 db의 정보를 기입할 것!
-
 ---
 
 1.0.4
