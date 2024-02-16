@@ -1,24 +1,18 @@
-# jolbufront
+AI 코인 플랫폼 프론트 Vue.js
 
-## Project setup
-```
-npm install
-```
+실행 전 npm i 필수!
 
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
+실행 npm run serve
 
-### Compiles and minifies for production
-```
-npm run build
-```
+----
+1.0.4
+실시간 소켓을 이용한 chat 기능 추가
 
-### Lints and fixes files
-```
-npm run lint
-```
+1.0.3
+모의투자 랭킹 추가
 
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+1.0.2
+UI 및 기타 오류 수정
+
+1.0.1
+기타 코드 수정(외부적인 변화 없음)
