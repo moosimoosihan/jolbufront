@@ -55,15 +55,14 @@ export default {
     },
   },
   created() {
-    this.getmypageai();
+    this.getAdminAI();
   },
   methods: {
-    async getmypageai() {
+    async getAdminAI() {
       this.mypageai = [];
       try {
-        const user_no = this.user.user_no;
         const response = await axios.get(
-          `http://localhost:3000/mypage/mypageai/${user_no}`
+          `http://localhost:3000/admin/allai`
         );
         for (var i = 0; i < response.data.length; i++) {
           this.mypageai.push({
